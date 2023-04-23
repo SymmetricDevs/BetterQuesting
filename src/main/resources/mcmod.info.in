@@ -4,7 +4,7 @@
     "name": "Better Questing Unofficial",
     "description": "A continuation of the popular Questing Mod, Better Questing",
     "version": "${version}",
-    "mcversion": "${mcversion}",
+    "mcversion": "${mcVersion}",
     "url": "https://github.com/CleanroomMC/BetterQuesting",
     "updateUrl": "",
     "authorList": [

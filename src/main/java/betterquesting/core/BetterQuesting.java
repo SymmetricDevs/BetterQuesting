@@ -45,7 +45,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = BetterQuesting.MODID, version = BetterQuesting.VERSION, name = BetterQuesting.NAME, guiFactory = "betterquesting.handlers.ConfigGuiFactory")
+@Mod(modid = BetterQuesting.MODID, guiFactory = "betterquesting.handlers.ConfigGuiFactory")
 public class BetterQuesting {
     public static final String VERSION = "@VERSION@";
     public static final String MODID = "betterquesting";
