@@ -2,7 +2,6 @@ package betterquesting.commands;
 
 import betterquesting.api.network.QuestingPacket;
 import betterquesting.api.questing.IQuest;
-import betterquesting.api2.storage.DBEntry;
 import betterquesting.network.PacketSender;
 import betterquesting.questing.QuestDatabase;
 import net.minecraft.command.CommandBase;
@@ -17,6 +16,7 @@ import net.minecraft.util.text.TextComponentString;
 import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class BQ_CopyProgress extends CommandBase {
@@ -62,7 +62,7 @@ public class BQ_CopyProgress extends CommandBase {
 
             long current = System.currentTimeMillis();
             int questsCompleted = 0;
-            for (DBEntry<IQuest> questDBEntry : QuestDatabase.INSTANCE.getEntries()) {
+            for (Map.Entry<UUID, IQuest> questDBEntry : QuestDatabase.INSTANCE.entrySet()) {
                 IQuest quest = questDBEntry.getValue();
                 if (quest.isComplete(ownUUID) && !quest.isComplete(addUUID)) {
                     quest.setComplete(addUUID, current);

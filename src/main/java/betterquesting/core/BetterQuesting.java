@@ -50,7 +50,7 @@ public class BetterQuesting {
     public static final String VERSION = "@VERSION@";
     public static final String MODID = "betterquesting";
     public static final String NAME = "Better Questing Unofficial";
-    public static final String FORMAT = "2.0.0";
+    public static final String FORMAT = "3.0.0";
 
     // Used for some legacy compat
     public static final String MODID_STD = "bq_standard";

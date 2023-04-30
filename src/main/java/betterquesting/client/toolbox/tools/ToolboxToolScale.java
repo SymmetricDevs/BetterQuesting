@@ -3,6 +3,7 @@ package betterquesting.client.toolbox.tools;
 import betterquesting.api.client.toolbox.IToolboxTool;
 import betterquesting.api.questing.IQuestLine;
 import betterquesting.api.questing.IQuestLineEntry;
+import betterquesting.api.utils.NBTConverter;
 import betterquesting.api2.client.gui.controls.PanelButtonQuest;
 import betterquesting.api2.client.gui.misc.GuiRectangle;
 import betterquesting.api2.client.gui.panels.lists.CanvasQuestLine;
@@ -23,6 +24,7 @@ import org.lwjgl.util.vector.Vector4f;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class ToolboxToolScale implements IToolboxTool {
     private CanvasQuestLine gui;
@@ -40,9 +42,9 @@ public class ToolboxToolScale implements IToolboxTool {
 
     @Override
     public void disableTool() {
-        if (grabList.size() > 0) {
+        if (!grabList.isEmpty()) {
             for (GrabEntry grab : grabList) {
-                IQuestLineEntry qle = gui.getQuestLine().getValue(grab.btn.getStoredValue().getID());
+                IQuestLineEntry qle = gui.getQuestLine().get(grab.btn.getStoredValue().getKey());
 
                 if (qle != null) {
                     grab.btn.rect.x = qle.getPosX();
@@ -62,7 +64,7 @@ public class ToolboxToolScale implements IToolboxTool {
 
         for (GrabEntry grab : grabList) {
             for (PanelButtonQuest btn : PanelToolController.selected) {
-                if (btn.getStoredValue().getID() == grab.btn.getStoredValue().getID()) {
+                if (btn.getStoredValue().getKey().equals(grab.btn.getStoredValue().getKey())) {
                     tmp.add(new GrabEntry(btn, grab.anchor));
                     break;
                 }
@@ -120,9 +122,9 @@ public class ToolboxToolScale implements IToolboxTool {
 
     @Override
     public boolean onMouseClick(int mx, int my, int click) {
-        if (click == 1 && grabList.size() > 0) {
+        if (click == 1 && !grabList.isEmpty()) {
             for (GrabEntry grab : grabList) {
-                IQuestLineEntry qle = gui.getQuestLine().getValue(grab.btn.getStoredValue().getID());
+                IQuestLineEntry qle = gui.getQuestLine().get(grab.btn.getStoredValue().getKey());
 
                 if (qle != null) {
                     grab.btn.rect.x = qle.getPosX();
@@ -138,11 +140,11 @@ public class ToolboxToolScale implements IToolboxTool {
             return false;
         }
 
-        if (grabList.size() > 0) {
+        if (!grabList.isEmpty()) {
             IQuestLine qLine = gui.getQuestLine();
-            int lID = QuestLineDatabase.INSTANCE.getID(qLine);
+            UUID lID = QuestLineDatabase.INSTANCE.lookupKey(qLine);
             for (GrabEntry grab : grabList) {
-                IQuestLineEntry qle = gui.getQuestLine().getValue(grab.btn.getStoredValue().getID());
+                IQuestLineEntry qle = gui.getQuestLine().get(grab.btn.getStoredValue().getKey());
                 if (qle != null) {
                     qle.setPosition(grab.btn.rect.x, grab.btn.rect.y);
                     qle.setSize(grab.btn.rect.w, grab.btn.rect.h);
@@ -153,7 +155,7 @@ public class ToolboxToolScale implements IToolboxTool {
             NBTTagCompound chPayload = new NBTTagCompound();
             NBTTagList cdList = new NBTTagList();
             NBTTagCompound tagEntry = new NBTTagCompound();
-            tagEntry.setInteger("chapterID", lID);
+            NBTConverter.UuidValueType.QUEST_LINE.writeId(lID, tagEntry);
             tagEntry.setTag("config", qLine.writeToNBT(new NBTTagCompound(), null));
             cdList.appendTag(tagEntry);
             chPayload.setTag("data", cdList);
@@ -225,7 +227,7 @@ public class ToolboxToolScale implements IToolboxTool {
 
     @Override
     public boolean clampScrolling() {
-        return grabList.size() <= 0;
+        return grabList.isEmpty();
     }
 
     @Override
@@ -234,10 +236,10 @@ public class ToolboxToolScale implements IToolboxTool {
 
     @Override
     public boolean useSelection() {
-        return grabList.size() <= 0;
+        return grabList.isEmpty();
     }
 
-    private class GrabEntry {
+    private static class GrabEntry {
         private final PanelButtonQuest btn;
         private final Vector4f anchor;
         private final int sx;

@@ -70,7 +70,7 @@ public class PropertyContainer implements IPropertyContainer, INBTSaveLoad<NBTTa
 
     @Override
     public synchronized void readFromNBT(NBTTagCompound nbt) {
-        for (String key : nbtInfo.getKeySet()) nbtInfo.removeTag(key);
+        removeAllProps();
         nbtInfo.merge(nbt);
 
         // TODO: FIX CASING

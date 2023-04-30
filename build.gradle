@@ -11,7 +11,10 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 minecraft {
     mappings channel: project.mcpChannel, version: project.mcpVersion
-    accessTransformer = project.file("jei_at.cfg") // forgegradle is too dumb to include the AT from the jei dep
+    accessTransformers(
+        project.file("jei_at.cfg"), // forgegradle is too dumb to include the AT from the jei dep
+        project.file("src/main/resources/META-INF/betterquesting_at.cfg")
+    )
 
     runs {
         client {
@@ -48,7 +51,13 @@ processResources {
     }
 }
 
-jar.finalizedBy("reobfJar")
+jar {
+    manifest {
+        attributes "FMLAT": "betterquesting_at.cfg"
+    }
+
+    finalizedBy "reobfJar"
+}
 
 tasks.register("deobfJar", Jar) {
     from sourceSets.main.output
