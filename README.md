@@ -2,6 +2,8 @@
 
 A new and improved questing mod for Minecraft pack creators
 
+[Developers should see the notes](./notes)
+
 ## This fork
 
 The Supersymmetry team had created this fork to incorporate changes from
