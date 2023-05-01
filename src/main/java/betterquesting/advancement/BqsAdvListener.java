@@ -9,23 +9,12 @@ import betterquesting.questing.tasks.TaskTrigger;
 import net.minecraft.advancements.ICriterionInstance;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.Tuple;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import javax.annotation.Nonnull;
-import java.lang.reflect.Field;
 import java.util.UUID;
 
 public class BqsAdvListener<T extends ICriterionInstance> extends ICriterionTrigger.Listener<T> {
-    private static final Field f_playerAdv;
-
-    static {
-        // TODO: access transformer
-        f_playerAdv = ReflectionHelper.findField(PlayerAdvancements.class, "field_192762_j", "player");
-        f_playerAdv.setAccessible(true);
-    }
-
     private final ICriterionTrigger<T> trigType;
     private final Tuple<UUID, Integer> mappedIDs;
 
@@ -54,7 +43,7 @@ public class BqsAdvListener<T extends ICriterionInstance> extends ICriterionTrig
             ITask t = q.getTasks().getValue(mappedIDs.getSecond());
             if (!(t instanceof TaskTrigger)) return;
 
-            ((TaskTrigger) t).onCriteriaComplete(((EntityPlayerMP) f_playerAdv.get(playerAdv)), this, mappedIDs.getFirst());
+            ((TaskTrigger) t).onCriteriaComplete(playerAdv.player, this, mappedIDs.getFirst());
         } catch (Exception e) {
             BetterQuesting.logger.error(e);
         }
