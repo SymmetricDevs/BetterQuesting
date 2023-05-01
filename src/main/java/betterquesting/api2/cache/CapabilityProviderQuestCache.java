@@ -11,11 +11,25 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class CapabilityProviderQuestCache implements ICapabilityProvider, ICapabilitySerializable<NBTTagCompound> {
+    public static final ResourceLocation LOC_QUEST_CACHE = new ResourceLocation("betterquesting", "quest_cache");
     @CapabilityInject(QuestCache.class)
     public static Capability<QuestCache> CAP_QUEST_CACHE;
-    public static final ResourceLocation LOC_QUEST_CACHE = new ResourceLocation("betterquesting", "quest_cache");
-
     private final QuestCache cache = new QuestCache();
+
+    public static void register() {
+        CapabilityManager.INSTANCE.register(QuestCache.class, new IStorage<QuestCache>() {
+            @Nullable
+            @Override
+            public NBTBase writeNBT(Capability<QuestCache> capability, QuestCache instance, EnumFacing side) {
+                return instance.serializeNBT();
+            }
+
+            @Override
+            public void readNBT(Capability<QuestCache> capability, QuestCache instance, EnumFacing side, NBTBase nbt) {
+                if (nbt instanceof NBTTagCompound) instance.deserializeNBT((NBTTagCompound) nbt);
+            }
+        }, QuestCache::new);
+    }
 
     @Override
     public NBTTagCompound serializeNBT() {
@@ -36,20 +50,5 @@ public class CapabilityProviderQuestCache implements ICapabilityProvider, ICapab
     @Override
     public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
         return capability == CAP_QUEST_CACHE ? CAP_QUEST_CACHE.cast(cache) : null;
-    }
-
-    public static void register() {
-        CapabilityManager.INSTANCE.register(QuestCache.class, new IStorage<QuestCache>() {
-            @Nullable
-            @Override
-            public NBTBase writeNBT(Capability<QuestCache> capability, QuestCache instance, EnumFacing side) {
-                return instance.serializeNBT();
-            }
-
-            @Override
-            public void readNBT(Capability<QuestCache> capability, QuestCache instance, EnumFacing side, NBTBase nbt) {
-                if (nbt instanceof NBTTagCompound) instance.deserializeNBT((NBTTagCompound) nbt);
-            }
-        }, QuestCache::new);
     }
 }

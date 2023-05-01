@@ -40,9 +40,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class GuiPrerequisiteEditor extends GuiScreenCanvas implements IPEventListener, IVolatileScreen, INeedsRefresh {
-    private IQuest quest;
     private final UUID questID;
-
+    private IQuest quest;
     private CanvasQuestDatabase canvasDB;
     private CanvasScrolling canvasPreReq;
 

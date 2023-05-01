@@ -40,6 +40,9 @@ import java.util.Map.Entry;
 public class AdvImporter implements IImporter {
     public static final AdvImporter INSTANCE = new AdvImporter();
     private static final FileFilter FILTER = new FileExtensionFilter(".json");
+    private final TreeMap<ResourceLocation, Map.Entry<UUID, IQuest>> ID_MAP = new TreeMap<>((o1, o2) -> o2.toString().compareToIgnoreCase(o1.toString())); // Reverse sort... because Minecraft does (I think?).
+    private final HashMap<ResourceLocation, List<IQuest>> PENDING_CHILDREN = new HashMap<>();
+    private final List<List<AdvTreeNode>> NODES_BY_DEPTH = new ArrayList<>();
 
     @Override
     public String getUnlocalisedName() {
@@ -101,8 +104,6 @@ public class AdvImporter implements IImporter {
         }
     }
 
-    // ===== QUEST PARSER =====
-
     /**
      * Because Minecraft bases the Advancement IDs off the file structure
      * we will have to take a guess based on this file's location.
@@ -122,9 +123,6 @@ public class AdvImporter implements IImporter {
         }
         return new ResourceLocation("minecraft", FilenameUtils.removeExtension(file.getName()));
     }
-
-    private final TreeMap<ResourceLocation, Map.Entry<UUID, IQuest>> ID_MAP = new TreeMap<>((o1, o2) -> o2.toString().compareToIgnoreCase(o1.toString())); // Reverse sort... because Minecraft does (I think?).
-    private final HashMap<ResourceLocation, List<IQuest>> PENDING_CHILDREN = new HashMap<>();
 
     private void registerQuest(ResourceLocation id, Map.Entry<UUID, IQuest> entry) {
         ID_MAP.put(id, entry);
@@ -259,10 +257,6 @@ public class AdvImporter implements IImporter {
     private void addReq(IQuest quest, UUID id) {
         quest.getRequirements().add(id);
     }
-
-    // ===== LAYOUT GENERATOR =====
-
-    private final List<List<AdvTreeNode>> NODES_BY_DEPTH = new ArrayList<>();
 
     private void generateLayout(Map.Entry<UUID, IQuest> root, IQuestLineDatabase lineDB) {
         // Setup: Construct node tree (depth first ordering)

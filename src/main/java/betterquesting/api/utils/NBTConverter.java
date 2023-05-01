@@ -19,83 +19,6 @@ import java.util.stream.Collectors;
 
 public class NBTConverter {
     /**
-     * Enum holding the different types of values that are persisted via UUID.
-     */
-    public enum UuidValueType {
-        QUEST("questID"),
-        QUEST_LINE("questLineID");
-
-        private final String idFieldName;
-        private final String highIdFieldName;
-        private final String lowIdFieldName;
-
-        UuidValueType(String idFieldName) {
-            this.idFieldName = idFieldName;
-            this.highIdFieldName = idFieldName + "High";
-            this.lowIdFieldName = idFieldName + "Low";
-        }
-
-        public NBTTagCompound writeId(UUID uuid) {
-            NBTTagCompound tag = new NBTTagCompound();
-            writeId(uuid, tag);
-            return tag;
-        }
-
-        public void writeId(UUID uuid, NBTTagCompound tag) {
-            tag.setLong(highIdFieldName, uuid.getMostSignificantBits());
-            tag.setLong(lowIdFieldName, uuid.getLeastSignificantBits());
-        }
-
-        /** Use this method in cases where the player needs to edit the NBT manually. */
-        public void writeIdString(@Nullable UUID uuid, NBTTagCompound tag) {
-            tag.setString(idFieldName, uuid == null ? "" : uuid.toString());
-        }
-
-        public NBTTagList writeIds(Collection<UUID> uuids) {
-            NBTTagList tagList = new NBTTagList();
-            uuids.forEach(uuid -> tagList.appendTag(writeId(uuid)));
-            return tagList;
-        }
-
-        public Optional<UUID> tryReadId(NBTTagCompound tag) {
-            if (tag.hasKey(highIdFieldName, 99) && tag.hasKey(lowIdFieldName, 99)) {
-                return Optional.of(readId(tag));
-            } else {
-                return Optional.empty();
-            }
-        }
-
-        public UUID readId(NBTTagCompound tag) {
-            return new UUID(tag.getLong(highIdFieldName), tag.getLong(lowIdFieldName));
-        }
-
-        /** Use this method in cases where the player needs to edit the NBT manually. */
-        public Optional<UUID> tryReadIdString(NBTTagCompound tag) {
-            if (!tag.hasKey(idFieldName, Constants.NBT.TAG_STRING)) {
-                return Optional.empty();
-            }
-
-            String questId = tag.getString(idFieldName);
-            if (questId.isEmpty()) {
-                return Optional.empty();
-            }
-
-            return Optional.of(UUID.fromString(questId));
-        }
-
-        public List<UUID> readIds(NBTTagCompound tag, String key) {
-            return readIds(tag.getTagList(key, Constants.NBT.TAG_COMPOUND));
-        }
-
-        public List<UUID> readIds(NBTTagList tagList) {
-            return Streams.stream(tagList.iterator())
-                    .map(NBTTagCompound.class::cast)
-                    .map(this::readId)
-                    .collect(Collectors.toCollection(ArrayList::new));
-        }
-    }
-
-    /**
      * Convert NBT tags to a JSON object
      */
     private static void NBTtoJSON_Base(NBTBase value, boolean format, JsonWriter out) throws IOException {
@@ -374,7 +297,7 @@ public class NBTConverter {
             QuestingAPI.getLogger().log(Level.ERROR, "An error occured while parsing JsonElement to NBTBase (" + tagID + "):", e);
         }
 
-        QuestingAPI.getLogger().log(Level.WARN, "Unknown NBT representation for " + jObj.toString() + " (ID: " + tagID + ")");
+        QuestingAPI.getLogger().log(Level.WARN, "Unknown NBT representation for " + jObj + " (ID: " + tagID + ")");
         return new NBTTagString();
     }
 
@@ -473,5 +396,86 @@ public class NBTConverter {
         }
 
         return tagID;
+    }
+
+    /**
+     * Enum holding the different types of values that are persisted via UUID.
+     */
+    public enum UuidValueType {
+        QUEST("questID"),
+        QUEST_LINE("questLineID");
+
+        private final String idFieldName;
+        private final String highIdFieldName;
+        private final String lowIdFieldName;
+
+        UuidValueType(String idFieldName) {
+            this.idFieldName = idFieldName;
+            this.highIdFieldName = idFieldName + "High";
+            this.lowIdFieldName = idFieldName + "Low";
+        }
+
+        public NBTTagCompound writeId(UUID uuid) {
+            NBTTagCompound tag = new NBTTagCompound();
+            writeId(uuid, tag);
+            return tag;
+        }
+
+        public void writeId(UUID uuid, NBTTagCompound tag) {
+            tag.setLong(highIdFieldName, uuid.getMostSignificantBits());
+            tag.setLong(lowIdFieldName, uuid.getLeastSignificantBits());
+        }
+
+        /**
+         * Use this method in cases where the player needs to edit the NBT manually.
+         */
+        public void writeIdString(@Nullable UUID uuid, NBTTagCompound tag) {
+            tag.setString(idFieldName, uuid == null ? "" : uuid.toString());
+        }
+
+        public NBTTagList writeIds(Collection<UUID> uuids) {
+            NBTTagList tagList = new NBTTagList();
+            uuids.forEach(uuid -> tagList.appendTag(writeId(uuid)));
+            return tagList;
+        }
+
+        public Optional<UUID> tryReadId(NBTTagCompound tag) {
+            if (tag.hasKey(highIdFieldName, 99) && tag.hasKey(lowIdFieldName, 99)) {
+                return Optional.of(readId(tag));
+            } else {
+                return Optional.empty();
+            }
+        }
+
+        public UUID readId(NBTTagCompound tag) {
+            return new UUID(tag.getLong(highIdFieldName), tag.getLong(lowIdFieldName));
+        }
+
+        /**
+         * Use this method in cases where the player needs to edit the NBT manually.
+         */
+        public Optional<UUID> tryReadIdString(NBTTagCompound tag) {
+            if (!tag.hasKey(idFieldName, Constants.NBT.TAG_STRING)) {
+                return Optional.empty();
+            }
+
+            String questId = tag.getString(idFieldName);
+            if (questId.isEmpty()) {
+                return Optional.empty();
+            }
+
+            return Optional.of(UUID.fromString(questId));
+        }
+
+        public List<UUID> readIds(NBTTagCompound tag, String key) {
+            return readIds(tag.getTagList(key, Constants.NBT.TAG_COMPOUND));
+        }
+
+        public List<UUID> readIds(NBTTagList tagList) {
+            return Streams.stream(tagList.iterator())
+                    .map(NBTTagCompound.class::cast)
+                    .map(this::readId)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        }
     }
 }

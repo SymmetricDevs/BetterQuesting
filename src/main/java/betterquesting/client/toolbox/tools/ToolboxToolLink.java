@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.UUID;
 
 public class ToolboxToolLink implements IToolboxTool {
-    private CanvasQuestLine gui;
     private final NonNullList<PanelButtonQuest> linking = NonNullList.create();
     private final GuiRectangle mouseRect = new GuiRectangle(0, 0, 0, 0);
+    private CanvasQuestLine gui;
 
     @Override
     public void initTool(CanvasQuestLine gui) {

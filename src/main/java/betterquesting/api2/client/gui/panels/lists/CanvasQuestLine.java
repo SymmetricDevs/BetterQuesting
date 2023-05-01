@@ -33,9 +33,8 @@ public class CanvasQuestLine extends CanvasScrolling {
     private final List<PanelButtonQuest> btnList = new ArrayList<>();
 
     private final int buttonId;
-    private IQuestLine lastQL;
-
     private final int zoomToFitMargin = 24;
+    private IQuestLine lastQL;
 
     public CanvasQuestLine(IGuiRect rect, int buttonId) {
         super(rect);
@@ -64,10 +63,6 @@ public class CanvasQuestLine extends CanvasScrolling {
 
     public IQuestLine getQuestLine() {
         return lastQL;
-    }
-
-    public void refreshQuestLine() {
-        setQuestLine(lastQL);
     }
 
     /**
@@ -170,6 +165,10 @@ public class CanvasQuestLine extends CanvasScrolling {
         }
 
         fitToWindow();
+    }
+
+    public void refreshQuestLine() {
+        setQuestLine(lastQL);
     }
 
     public void fitToWindow() {

@@ -95,7 +95,7 @@ public class QuestCommandReset extends QuestCommandBase {
                     quest.resetUser(uuid, true); // Clear progress and state
                     SaveLoadHandler.INSTANCE.markDirty();
                     sender.sendMessage(new TextComponentTranslation("betterquesting.cmd.reset.player_single", new TextComponentTranslation(quest.getProperty(NativeProps.NAME)), pName));
-                    if (player != null) NetQuestSync.sendSync(player, Collections.singletonList(id), null, true, true);;
+                    if (player != null) NetQuestSync.sendSync(player, Collections.singletonList(id), null, true, true);
                 } else {
                     quest.resetUser(null, true);
                     SaveLoadHandler.INSTANCE.markDirty();

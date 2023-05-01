@@ -79,12 +79,15 @@ public interface IQuest extends INBTSaveLoad<NBTTagCompound>, INBTProgress<NBTTa
         IMPLICIT(PresetIcon.ICON_VISIBILITY_IMPLICIT),
         HIDDEN(PresetIcon.ICON_VISIBILITY_HIDDEN);
 
-        private final PresetIcon icon;
-
         private static final RequirementType[] VALUES = values();
+        private final PresetIcon icon;
 
         RequirementType(PresetIcon icon) {
             this.icon = icon;
+        }
+
+        public static RequirementType from(byte id) {
+            return id >= 0 && id < VALUES.length ? VALUES[id] : NORMAL;
         }
 
         public byte id() {
@@ -97,10 +100,6 @@ public interface IQuest extends INBTSaveLoad<NBTTagCompound>, INBTProgress<NBTTa
 
         public RequirementType next() {
             return VALUES[(ordinal() + 1) % VALUES.length];
-        }
-
-        public static RequirementType from(byte id) {
-            return id >= 0 && id < VALUES.length ? VALUES[id] : NORMAL;
         }
     }
 }

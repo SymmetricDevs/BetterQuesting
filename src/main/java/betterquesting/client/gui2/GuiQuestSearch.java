@@ -21,8 +21,8 @@ import net.minecraft.client.gui.GuiScreen;
 import java.util.function.Consumer;
 
 public class GuiQuestSearch extends GuiScreenCanvas {
-
     private PanelTextField<String> searchBox;
+    private Consumer<QuestSearchEntry> callback;
 
     public GuiQuestSearch(GuiScreen parent) {
         super(parent);
@@ -85,8 +85,6 @@ public class GuiQuestSearch extends GuiScreenCanvas {
         });
         return canvasQuestSearch;
     }
-
-    private Consumer<QuestSearchEntry> callback;
 
     public void setCallback(Consumer<QuestSearchEntry> callback) {
         this.callback = callback;

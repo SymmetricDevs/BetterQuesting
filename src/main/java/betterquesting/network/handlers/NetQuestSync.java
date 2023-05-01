@@ -51,7 +51,7 @@ public class NetQuestSync {
             if (server == null) return;
 
             for (EntityPlayerMP player : server.getPlayerList().getPlayers()) {
-                sendSync((EntityPlayerMP)player, questIDs, null, true, true); // Progression only this pass
+                sendSync(player, questIDs, null, true, true); // Progression only this pass
             }
         }
     }

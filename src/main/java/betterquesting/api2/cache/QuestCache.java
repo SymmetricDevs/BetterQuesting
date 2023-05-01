@@ -37,6 +37,48 @@ public class QuestCache implements INBTSerializable<NBTTagCompound> {
     // Quests that need to be sent to the client to update progression (NOT for edits. Handle that elsewhere)
     private final HashSet<UUID> markedDirty = new HashSet<>();
 
+    // TODO: Make this based on a fixed state stored on the quest instead of calculated on demand
+    // TODO: Also make this thread safe
+    public static boolean isQuestShown(IQuest quest, UUID uuid, EntityPlayer player) {
+        if (quest == null || uuid == null) {
+            return false;
+        }
+
+        EnumQuestVisibility vis = quest.getProperty(NativeProps.VISIBILITY);
+
+        if (QuestingAPI.getAPI(ApiReference.SETTINGS).canUserEdit(player) ||
+                (BQ_Settings.viewMode && !quest.getProperty(NativeProps.IGNORES_VIEW_MODE) ||
+                        vis == EnumQuestVisibility.ALWAYS)
+        ) // Always shown or in edit mode, or in view mode if not overridden
+        {
+            return true;
+        } else if (vis == EnumQuestVisibility.HIDDEN) {
+            return false;
+        } else if (vis == EnumQuestVisibility.UNLOCKED) {
+            return quest.isComplete(uuid) || quest.isUnlocked(uuid);
+        } else if (vis == EnumQuestVisibility.NORMAL) {
+            if (quest.isComplete(uuid) || quest.isUnlocked(uuid)) // Complete or pending
+            {
+                return true;
+            }
+
+            // Previous quest is underway and this one is visible but still locked (foreshadowing)
+            return QuestDatabase.INSTANCE.getAll(quest.getRequirements())
+                    .allMatch(q -> q.isUnlocked(uuid));
+        } else if (vis == EnumQuestVisibility.COMPLETED) {
+            return quest.isComplete(uuid);
+        } else if (vis == EnumQuestVisibility.CHAIN) {
+            if (quest.getRequirements().isEmpty()) {
+                return true;
+            }
+
+            return QuestDatabase.INSTANCE.getAll(quest.getRequirements())
+                    .anyMatch(q -> isQuestShown(q, uuid, player));
+        }
+
+        return true;
+    }
+
     public synchronized Set<UUID> getActiveQuests() {
         return activeQuests;
     }
@@ -95,7 +137,7 @@ public class QuestCache implements INBTSerializable<NBTTagCompound> {
                         long altTime = ue.getLong("timestamp");
                         if (repeat > 1 && !entry.getValue().getProperty(NativeProps.REPEAT_REL))
                             altTime -= (altTime % repeat);
-                        tmpReset.add(new QResetTime(entry.getKey(), altTime + (repeat * 50)));
+                        tmpReset.add(new QResetTime(entry.getKey(), altTime + (repeat * 50L)));
                     }
 
                     if (!entry.getValue().hasClaimed(uuid) && entry.getValue().getProperty(NativeProps.AUTO_CLAIM)) {
@@ -135,7 +177,7 @@ public class QuestCache implements INBTSerializable<NBTTagCompound> {
 
         NBTTagList tagSchedule = new NBTTagList();
         for (QResetTime entry : getScheduledResets()) {
-            NBTTagCompound tagEntry = NBTConverter.UuidValueType.QUEST.writeId(entry.questID);;
+            NBTTagCompound tagEntry = NBTConverter.UuidValueType.QUEST.writeId(entry.questID);
             NBTConverter.UuidValueType.QUEST.writeId(entry.questID, tagEntry);
             tagEntry.setLong("time", entry.time);
             tagSchedule.appendTag(tagEntry);
@@ -197,47 +239,5 @@ public class QuestCache implements INBTSerializable<NBTTagCompound> {
             if (!(o instanceof QResetTime)) return false;
             return ((QResetTime) o).questID.equals(questID);
         }
-    }
-
-    // TODO: Make this based on a fixed state stored on the quest instead of calculated on demand
-    // TODO: Also make this thread safe
-    public static boolean isQuestShown(IQuest quest, UUID uuid, EntityPlayer player) {
-        if (quest == null || uuid == null) {
-            return false;
-        }
-
-        EnumQuestVisibility vis = quest.getProperty(NativeProps.VISIBILITY);
-
-        if (QuestingAPI.getAPI(ApiReference.SETTINGS).canUserEdit(player) ||
-                (BQ_Settings.viewMode && !quest.getProperty(NativeProps.IGNORES_VIEW_MODE) ||
-                vis == EnumQuestVisibility.ALWAYS)
-        ) // Always shown or in edit mode, or in view mode if not overridden
-        {
-            return true;
-        } else if (vis == EnumQuestVisibility.HIDDEN) {
-            return false;
-        } else if (vis == EnumQuestVisibility.UNLOCKED) {
-            return quest.isComplete(uuid) || quest.isUnlocked(uuid);
-        } else if (vis == EnumQuestVisibility.NORMAL) {
-            if (quest.isComplete(uuid) || quest.isUnlocked(uuid)) // Complete or pending
-            {
-                return true;
-            }
-
-            // Previous quest is underway and this one is visible but still locked (foreshadowing)
-            return QuestDatabase.INSTANCE.getAll(quest.getRequirements())
-                    .allMatch(q -> q.isUnlocked(uuid));
-        } else if (vis == EnumQuestVisibility.COMPLETED) {
-            return quest.isComplete(uuid);
-        } else if (vis == EnumQuestVisibility.CHAIN) {
-            if (quest.getRequirements().isEmpty()) {
-                return true;
-            }
-
-            return QuestDatabase.INSTANCE.getAll(quest.getRequirements())
-                    .anyMatch(q -> isQuestShown(q, uuid, player));
-        }
-
-        return true;
     }
 }

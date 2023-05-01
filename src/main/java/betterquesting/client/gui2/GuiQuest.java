@@ -47,30 +47,21 @@ public class GuiQuest extends GuiScreenCanvas implements IPEventListener, INeeds
      *  Map which contains scrolls positions. <questId, Triple<taskScroll, rewardScroll, descScroll>>
      */
     private static final Map<UUID, ScrollPosition> scrollsPositions = new HashMap<>();
-    private ScrollPosition scrollPosition;
-
     private final UUID questID;
-
-    private IQuest quest;
-
-    private PanelButton btnDetect;
-    private PanelButton btnClaim;
-
-    private CanvasEmpty cvInner;
-
-    private IGuiRect rectReward;
-    private IGuiRect rectTask;
-
-    private CanvasEmpty pnReward;
-    private CanvasScrolling csReward;
-
-    private CanvasEmpty pnTask;
-    private CanvasScrolling csTask;
-
-    private CanvasScrolling csDesc;
-
     private final int rewardIndex = 0;
     private final int taskIndex = 0;
+    private ScrollPosition scrollPosition;
+    private IQuest quest;
+    private PanelButton btnDetect;
+    private PanelButton btnClaim;
+    private CanvasEmpty cvInner;
+    private IGuiRect rectReward;
+    private IGuiRect rectTask;
+    private CanvasEmpty pnReward;
+    private CanvasScrolling csReward;
+    private CanvasEmpty pnTask;
+    private CanvasScrolling csTask;
+    private CanvasScrolling csDesc;
 
     public GuiQuest(GuiScreen parent, UUID questID) {
         super(parent);
@@ -99,12 +90,12 @@ public class GuiQuest extends GuiScreenCanvas implements IPEventListener, INeeds
         CanvasTextured cvBackground = new CanvasTextured(new GuiTransform(GuiAlign.FULL_BOX, new GuiPadding(0, 0, 0, 0), 0), PresetTexture.PANEL_MAIN.getTexture()) {
             @Override
             public boolean onMouseClick(int mx, int my, int click) {
-                if(click != 1) {
+                if (click != 1) {
                     return super.onMouseClick(mx, my, click);
                 }
 
                 // There are no current rewards, so create the pane
-                if(rectReward == null && !rectTask.contains(mx, my) && QuestingAPI.getAPI(ApiReference.SETTINGS).canUserEdit(mc.player)) {
+                if (rectReward == null && !rectTask.contains(mx, my) && QuestingAPI.getAPI(ApiReference.SETTINGS).canUserEdit(mc.player)) {
                     rectReward = new GuiTransform(new Vector4f(0F, 0.5F, 0.5F, 1F), new GuiPadding(0, 0, 8, 16), 0);
                     rectReward.setParent(cvInner.getTransform());
 
@@ -115,7 +106,7 @@ public class GuiQuest extends GuiScreenCanvas implements IPEventListener, INeeds
                     openPopup(popup);
 
                     // Try to make sure that players have added rewards via the popup, instead of opening the popup, and then clicking off
-                    if(quest.getRewards().size() > 0) {
+                    if (quest.getRewards().size() > 0) {
                         refreshDescPanel(true);
                         refreshRewardPanel();
                     }
@@ -123,15 +114,14 @@ public class GuiQuest extends GuiScreenCanvas implements IPEventListener, INeeds
 
                 }
                 // There are rewards, so just show the popup
-                else if(rectReward != null && rectReward.contains(mx, my) && QuestingAPI.getAPI(ApiReference.SETTINGS).canUserEdit(mc.player)) {
+                else if (rectReward != null && rectReward.contains(mx, my) && QuestingAPI.getAPI(ApiReference.SETTINGS).canUserEdit(mc.player)) {
                     PopContextMenu popup = new PopContextMenu(new GuiRectangle(mx, my, 76, 16), true);
                     GuiRewardEditor editor = new GuiRewardEditor(new GuiQuest(parent, questID), quest);
                     Runnable action = () -> mc.displayGuiScreen(editor);
                     popup.addButton(QuestTranslation.translate("betterquesting.context.add_reward"), null, action);
                     openPopup(popup);
                     return true;
-                }
-                else {
+                } else {
                     return super.onMouseClick(mx, my, click);
                 }
             }
@@ -189,8 +179,7 @@ public class GuiQuest extends GuiScreenCanvas implements IPEventListener, INeeds
                     popup.addButton(QuestTranslation.translate("betterquesting.context.add_task"), null, action);
                     openPopup(popup);
                     return true;
-                }
-                else return false;
+                } else return false;
             }
         };
         cvInner.addPanel(cvTaskPopup);
@@ -225,15 +214,15 @@ public class GuiQuest extends GuiScreenCanvas implements IPEventListener, INeeds
         try {
             return super.onMouseRelease(mx, my, click);
         } finally {
-            if(csReward != null){
+            if (csReward != null) {
                 scrollPosition.setRewardScrollY(csReward.getScrollY());
             }
 
-            if (csTask != null){
+            if (csTask != null) {
                 scrollPosition.setTaskScrollY(csTask.getScrollY());
             }
 
-            if (csDesc != null){
+            if (csDesc != null) {
                 scrollPosition.setDescScrollY(csDesc.getScrollY());
             }
         }
@@ -248,17 +237,16 @@ public class GuiQuest extends GuiScreenCanvas implements IPEventListener, INeeds
             }
 
             return false;
-        }
-        finally {
-            if(csReward != null){
+        } finally {
+            if (csReward != null) {
                 scrollPosition.setRewardScrollY(csReward.getScrollY());
             }
 
-            if (csTask != null){
+            if (csTask != null) {
                 scrollPosition.setTaskScrollY(csTask.getScrollY());
             }
 
-            if (csDesc != null){
+            if (csDesc != null) {
                 scrollPosition.setDescScrollY(csDesc.getScrollY());
             }
         }
@@ -434,14 +422,16 @@ public class GuiQuest extends GuiScreenCanvas implements IPEventListener, INeeds
         }
     }
 
-    public static class ScrollPosition{
+    public static class ScrollPosition {
+        private int taskScrollY;
+        private int rewardScrollY;
+        private int descScrollY;
+
         public ScrollPosition(int taskScrollY, int rewardScrollY, int descScrollY) {
             this.taskScrollY = taskScrollY;
             this.rewardScrollY = rewardScrollY;
             this.descScrollY = descScrollY;
         }
-
-        private int taskScrollY;
 
         public int getTaskScrollY() {
             return taskScrollY;
@@ -451,8 +441,6 @@ public class GuiQuest extends GuiScreenCanvas implements IPEventListener, INeeds
             this.taskScrollY = taskScrollY;
         }
 
-        private int rewardScrollY;
-
         public int getRewardScrollY() {
             return rewardScrollY;
         }
@@ -460,8 +448,6 @@ public class GuiQuest extends GuiScreenCanvas implements IPEventListener, INeeds
         public void setRewardScrollY(int rewardScrollY) {
             this.rewardScrollY = rewardScrollY;
         }
-
-        private int descScrollY;
 
         public int getDescScrollY() {
             return descScrollY;

@@ -29,9 +29,9 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class TaskCrafting implements ITask {
-    private final Set<UUID> completeUsers = new TreeSet<>();
     public final NonNullList<BigItemStack> requiredItems = NonNullList.create();
     public final TreeMap<UUID, int[]> userProgress = new TreeMap<>();
+    private final Set<UUID> completeUsers = new TreeSet<>();
     public boolean partialMatch = true;
     public boolean ignoreNBT = false;
     public boolean allowAnvil = false;

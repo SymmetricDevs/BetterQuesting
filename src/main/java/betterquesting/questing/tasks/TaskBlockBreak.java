@@ -33,9 +33,9 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class TaskBlockBreak implements ITask {
+    public final List<NbtBlockType> blockTypes = new ArrayList<>();
     private final Set<UUID> completeUsers = new TreeSet<>();
     private final TreeMap<UUID, int[]> userProgress = new TreeMap<>();
-    public final List<NbtBlockType> blockTypes = new ArrayList<>();
 
     public TaskBlockBreak() {
         blockTypes.add(new NbtBlockType());

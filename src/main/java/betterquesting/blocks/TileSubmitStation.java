@@ -43,14 +43,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class TileSubmitStation extends TileEntity implements IFluidHandler, ISidedInventory, ITickable, IFluidTankProperties {
+    private static final int[] slotsForFace = new int[]{0, 1};
     private final IItemHandler itemHandler;
     private final IFluidHandler fluidHandler;
-    private NonNullList<ItemStack> itemStack = NonNullList.withSize(2, ItemStack.EMPTY);
-    private boolean needsUpdate = false;
     public UUID owner = null;
     public UUID questID = null;
     public int taskID = -1;
-
+    private final NonNullList<ItemStack> itemStack = NonNullList.withSize(2, ItemStack.EMPTY);
+    private boolean needsUpdate = false;
     private Map.Entry<UUID, IQuest> qCached;
 
     @SuppressWarnings("WeakerAccess")
@@ -368,8 +368,6 @@ public class TileSubmitStation extends TileEntity implements IFluidHandler, ISid
 
         return tags;
     }
-
-    private static final int[] slotsForFace = new int[]{0, 1};
 
     @Override
     @Nonnull

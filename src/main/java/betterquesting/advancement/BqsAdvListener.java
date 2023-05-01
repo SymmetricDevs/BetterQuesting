@@ -18,6 +18,14 @@ import java.lang.reflect.Field;
 import java.util.UUID;
 
 public class BqsAdvListener<T extends ICriterionInstance> extends ICriterionTrigger.Listener<T> {
+    private static final Field f_playerAdv;
+
+    static {
+        // TODO: access transformer
+        f_playerAdv = ReflectionHelper.findField(PlayerAdvancements.class, "field_192762_j", "player");
+        f_playerAdv.setAccessible(true);
+    }
+
     private final ICriterionTrigger<T> trigType;
     private final Tuple<UUID, Integer> mappedIDs;
 
@@ -83,12 +91,5 @@ public class BqsAdvListener<T extends ICriterionInstance> extends ICriterionTrig
         i = 31 * i;// + this.advancement.hashCode();
         i = 31 * i + "BQ_PROXY".hashCode();
         return i;
-    }
-
-    private static final Field f_playerAdv;
-
-    static {
-        f_playerAdv = ReflectionHelper.findField(PlayerAdvancements.class, "field_192762_j", "player");
-        f_playerAdv.setAccessible(true);
     }
 }

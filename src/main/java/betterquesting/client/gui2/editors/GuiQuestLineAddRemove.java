@@ -48,10 +48,9 @@ import java.util.Map;
 import java.util.UUID;
 
 public class GuiQuestLineAddRemove extends GuiScreenCanvas implements IPEventListener, IVolatileScreen, INeedsRefresh {
+    private final UUID lineID;
     @Nullable
     private IQuestLine questLine;
-    private final UUID lineID;
-
     private CanvasQuestDatabase canvasDB;
     private CanvasScrolling canvasQL;
 
@@ -173,7 +172,7 @@ public class GuiQuestLineAddRemove extends GuiScreenCanvas implements IPEventLis
             Map.Entry<UUID, IQuest> entry = ((PanelButtonStorage<Map.Entry<UUID, IQuest>>) btn).getStoredValue();
             mc.displayGuiScreen(new GuiQuest(this, entry.getKey()));
         } else if (btn.getButtonID() == 2) { // Add
-            Map.Entry<UUID, IQuest> entry = ((PanelButtonStorage<Map.Entry<UUID, IQuest>>)btn).getStoredValue();
+            Map.Entry<UUID, IQuest> entry = ((PanelButtonStorage<Map.Entry<UUID, IQuest>>) btn).getStoredValue();
             IQuestLineEntry qe = new QuestLineEntry(0, 0);
             int x1 = 0;
             int y1 = 0;
@@ -203,7 +202,7 @@ public class GuiQuestLineAddRemove extends GuiScreenCanvas implements IPEventLis
             questLine.remove(entry.getKey());
             SendChanges();
         } else if (btn.getButtonID() == 4) { // Delete
-            Map.Entry<UUID, IQuest> entry = ((PanelButtonStorage<Map.Entry<UUID, IQuest>>)btn).getStoredValue();
+            Map.Entry<UUID, IQuest> entry = ((PanelButtonStorage<Map.Entry<UUID, IQuest>>) btn).getStoredValue();
             NBTTagCompound payload = new NBTTagCompound();
             payload.setTag("questIDs", NBTConverter.UuidValueType.QUEST.writeIds(Collections.singletonList(entry.getKey())));
             payload.setInteger("action", 1);

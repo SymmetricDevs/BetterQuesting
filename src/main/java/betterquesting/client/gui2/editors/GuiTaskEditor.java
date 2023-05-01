@@ -42,10 +42,9 @@ import org.lwjgl.util.vector.Vector4f;
 import java.util.*;
 
 public class GuiTaskEditor extends GuiScreenCanvas implements IPEventListener, IVolatileScreen, INeedsRefresh {
-    private CanvasScrolling qtList;
-
-    private IQuest quest;
     private final UUID qID;
+    private CanvasScrolling qtList;
+    private IQuest quest;
 
     public GuiTaskEditor(GuiScreen parent, IQuest quest) {
         super(parent);
@@ -188,7 +187,7 @@ public class GuiTaskEditor extends GuiScreenCanvas implements IPEventListener, I
         for (int i = 0; i < dbTsk.size(); i++) {
             ITask task = dbTsk.get(i).getValue();
             qtList.addPanel(new PanelButtonStorage<>(new GuiRectangle(0, i * 16, w - 16, 16, 0), 3, QuestTranslation.translate(task.getUnlocalisedName()), task));
-            qtList.addPanel(new PanelButtonStorage<>(new GuiRectangle(w - 16, i * 16, 16, 16, 0), 2, "" + TextFormatting.RED + TextFormatting.BOLD + "x", task));
+            qtList.addPanel(new PanelButtonStorage<>(new GuiRectangle(w - 16, i * 16, 16, 16, 0), 2, String.valueOf(TextFormatting.RED) + TextFormatting.BOLD + "x", task));
         }
     }
 

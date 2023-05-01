@@ -39,13 +39,11 @@ public class TaskTrigger implements ITask {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private final Set<UUID> completeUsers = new TreeSet<>();
-
+    public String desc = "";
     private String triggerID = "minecraft:impossible";
     private String critJson = "{}";
     private BqsAdvListener listener = null;
     private boolean needsSetup = true;
-
-    public String desc = "";
 
     public String getCriteriaJson() {
         return this.critJson;

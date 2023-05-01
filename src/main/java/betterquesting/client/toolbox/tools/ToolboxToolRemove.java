@@ -44,7 +44,7 @@ public class ToolboxToolRemove implements IToolboxTool {
         if (line != null && btn != null) {
             if (PanelToolController.selected.size() > 0) {
                 if (!PanelToolController.selected.contains(btn)) return false;
-                for(PanelButtonQuest b : PanelToolController.selected) line.remove(b.getStoredValue().getKey());
+                for (PanelButtonQuest b : PanelToolController.selected) line.remove(b.getStoredValue().getKey());
             } else {
                 UUID qID = btn.getStoredValue().getKey();
                 line.remove(qID);
@@ -94,7 +94,7 @@ public class ToolboxToolRemove implements IToolboxTool {
     public boolean onKeyPressed(char c, int key) {
         if (PanelToolController.selected.size() > 0 && key == Keyboard.KEY_RETURN) {
             IQuestLine line = gui.getQuestLine();
-            for(PanelButtonQuest b : PanelToolController.selected) line.remove(b.getStoredValue().getKey());
+            for (PanelButtonQuest b : PanelToolController.selected) line.remove(b.getStoredValue().getKey());
 
             // Sync Line
             NBTTagCompound chPayload = new NBTTagCompound();

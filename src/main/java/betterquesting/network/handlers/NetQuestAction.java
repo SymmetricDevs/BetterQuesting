@@ -60,7 +60,7 @@ public class NetQuestAction {
                 break;
             }
             default: {
-                BetterQuesting.logger.log(Level.ERROR, "Invalid quest user action '" + action + "'. Full payload:\n" + message.getFirst().toString());
+                BetterQuesting.logger.log(Level.ERROR, "Invalid quest user action '" + action + "'. Full payload:\n" + message.getFirst());
             }
         }
     }

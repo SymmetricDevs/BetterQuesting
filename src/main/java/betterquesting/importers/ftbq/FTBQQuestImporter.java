@@ -38,6 +38,59 @@ public class FTBQQuestImporter implements IImporter {
     private static final HashMap<String, Function<NBTTagCompound, ITask[]>> taskConverters = new HashMap<>();
     private static final HashMap<String, Function<NBTTagCompound, IReward[]>> rewardConverters = new HashMap<>();
 
+    private static IQuest iconQuest;
+    private static IQuestLine iconChapter;
+
+    static {
+        taskConverters.put("item", new FtbqTaskItem()::convertTask);
+        taskConverters.put("fluid", new FtbqTaskFluid()::convertTask);
+        taskConverters.put("forge_energy", new FtbqTaskEnergy()::converTask);
+        taskConverters.put("xp", new FtbqTaskXP()::convertTask);
+        taskConverters.put("dimension", new FtbqTaskDimension()::converTask);
+        taskConverters.put("stat", new FtbqTaskStat()::convertTask);
+        taskConverters.put("kill", new FtbqTaskKill()::convertTask);
+        taskConverters.put("location", new FtbqTaskLocation()::convertTask);
+        taskConverters.put("checkmark", tag -> new ITask[]{new TaskCheckbox()});
+        taskConverters.put("advancement", new FtbqTaskAdvancement()::converTask);
+
+        rewardConverters.put("item", new FtbqRewardItem()::convertTask);
+        rewardConverters.put("xp", new FtbqRewardXP(false)::convertTask);
+        rewardConverters.put("xp_levels", new FtbqRewardXP(true)::convertTask);
+        rewardConverters.put("command", new FtbqRewardCommand()::convertReward);
+    }
+
+    // NOTE: FTBQ shares IDs between multiple object types (WHY?!). Check type before use
+    private final HashMap<String, FTBEntry> ID_MAP = new HashMap<>();
+
+    private static void requestQuestIcon(IQuest quest) {
+        iconQuest = quest;
+    }
+
+    private static void requestChapterIcon(IQuestLine chapter) {
+        iconChapter = chapter;
+    }
+
+    public static void provideQuestIcon(BigItemStack stack) {
+        if (stack == null) return;
+
+        if (iconQuest != null) {
+            iconQuest.setProperty(NativeProps.ICON, stack);
+            iconQuest = null; // Request fufilled
+        }
+
+        if (iconChapter != null) {
+            iconChapter.setProperty(NativeProps.ICON, stack);
+            iconChapter = null; // Request fufilled
+        }
+    }
+
+    public static void provideChapterIcon(BigItemStack stack) {
+        if (iconChapter != null && stack != null) {
+            iconChapter.setProperty(NativeProps.ICON, stack);
+            iconChapter = null; // Request fufilled
+        }
+    }
+
     @Override
     public String getUnlocalisedName() {
         return "bq_standard.importer.ftbq_quest.name";
@@ -65,9 +118,6 @@ public class FTBQQuestImporter implements IImporter {
             }
         }
     }
-
-    // NOTE: FTBQ shares IDs between multiple object types (WHY?!). Check type before use
-    private final HashMap<String, FTBEntry> ID_MAP = new HashMap<>();
 
     private void startImport(IQuestDatabase questDB, IQuestLineDatabase lineDB, NBTTagCompound tagIndex, File folder) {
         int[] indexIDs = tagIndex.getIntArray("index"); // Read out the chapter index names
@@ -245,55 +295,5 @@ public class FTBQQuestImporter implements IImporter {
 
             entry.getKey().getRequirements().addAll(qIDs);
         }
-    }
-
-    private static IQuest iconQuest;
-    private static IQuestLine iconChapter;
-
-    private static void requestQuestIcon(IQuest quest) {
-        iconQuest = quest;
-    }
-
-    private static void requestChapterIcon(IQuestLine chapter) {
-        iconChapter = chapter;
-    }
-
-    public static void provideQuestIcon(BigItemStack stack) {
-        if (stack == null) return;
-
-        if (iconQuest != null) {
-            iconQuest.setProperty(NativeProps.ICON, stack);
-            iconQuest = null; // Request fufilled
-        }
-
-        if (iconChapter != null) {
-            iconChapter.setProperty(NativeProps.ICON, stack);
-            iconChapter = null; // Request fufilled
-        }
-    }
-
-    public static void provideChapterIcon(BigItemStack stack) {
-        if (iconChapter != null && stack != null) {
-            iconChapter.setProperty(NativeProps.ICON, stack);
-            iconChapter = null; // Request fufilled
-        }
-    }
-
-    static {
-        taskConverters.put("item", new FtbqTaskItem()::convertTask);
-        taskConverters.put("fluid", new FtbqTaskFluid()::convertTask);
-        taskConverters.put("forge_energy", new FtbqTaskEnergy()::converTask);
-        taskConverters.put("xp", new FtbqTaskXP()::convertTask);
-        taskConverters.put("dimension", new FtbqTaskDimension()::converTask);
-        taskConverters.put("stat", new FtbqTaskStat()::convertTask);
-        taskConverters.put("kill", new FtbqTaskKill()::convertTask);
-        taskConverters.put("location", new FtbqTaskLocation()::convertTask);
-        taskConverters.put("checkmark", tag -> new ITask[]{new TaskCheckbox()});
-        taskConverters.put("advancement", new FtbqTaskAdvancement()::converTask);
-
-        rewardConverters.put("item", new FtbqRewardItem()::convertTask);
-        rewardConverters.put("xp", new FtbqRewardXP(false)::convertTask);
-        rewardConverters.put("xp_levels", new FtbqRewardXP(true)::convertTask);
-        rewardConverters.put("command", new FtbqRewardCommand()::convertReward);
     }
 }

@@ -9,18 +9,6 @@ public class QuestEvent extends Event {
     private final UUID playerID;
     private final Set<UUID> questIDs;
 
-    public Set<UUID> getQuestIDs() {
-        return this.questIDs;
-    }
-
-    public UUID getPlayerID() {
-        return this.playerID;
-    }
-
-    public Type getType() {
-        return this.type;
-    }
-
     public QuestEvent(Type type, UUID playerID, UUID questID) {
         this.type = type;
         this.playerID = playerID;
@@ -31,6 +19,18 @@ public class QuestEvent extends Event {
         this.type = type;
         this.playerID = playerID;
         this.questIDs = Collections.unmodifiableSet(new HashSet<>(questIDs));
+    }
+
+    public Set<UUID> getQuestIDs() {
+        return this.questIDs;
+    }
+
+    public UUID getPlayerID() {
+        return this.playerID;
+    }
+
+    public Type getType() {
+        return this.type;
     }
 
     public enum Type {

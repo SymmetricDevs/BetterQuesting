@@ -15,12 +15,12 @@ import java.util.UUID;
 public class RewardPlaceholder implements IReward {
     private NBTTagCompound nbtSaved = new NBTTagCompound();
 
-    public void setRewardConfigData(NBTTagCompound nbt) {
-        nbtSaved = nbt;
-    }
-
     public NBTTagCompound getRewardConfigData() {
         return nbtSaved;
+    }
+
+    public void setRewardConfigData(NBTTagCompound nbt) {
+        nbtSaved = nbt;
     }
 
     @Override

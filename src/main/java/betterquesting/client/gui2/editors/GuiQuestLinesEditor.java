@@ -256,7 +256,7 @@ public class GuiQuestLinesEditor extends GuiScreenCanvas implements IPEventListe
             //mc.displayGuiScreen(new GuiQuestLineDesigner(this, selected));
             mc.displayGuiScreen(new GuiDesigner(this, selected));
         } else if (btn.getButtonID() == 5 && btn instanceof PanelButtonStorage) { // Select Quest
-            Map.Entry<UUID, IQuestLine> entry = ((PanelButtonStorage<Map.Entry<UUID, IQuestLine>>)btn).getStoredValue();
+            Map.Entry<UUID, IQuestLine> entry = ((PanelButtonStorage<Map.Entry<UUID, IQuestLine>>) btn).getStoredValue();
             selected = entry.getValue();
             selID = entry.getKey();
             tfName.setText(selected.getUnlocalisedName());
@@ -268,7 +268,7 @@ public class GuiQuestLinesEditor extends GuiScreenCanvas implements IPEventListe
 
             reloadList();
         } else if (btn.getButtonID() == 6 && btn instanceof PanelButtonStorage) { // Delete Quest
-            Map.Entry<UUID, IQuestLine> entry = ((PanelButtonStorage<Map.Entry<UUID, IQuestLine>>)btn).getStoredValue();
+            Map.Entry<UUID, IQuestLine> entry = ((PanelButtonStorage<Map.Entry<UUID, IQuestLine>>) btn).getStoredValue();
             NBTTagCompound payload = new NBTTagCompound();
             payload.setTag(
                     "questLineIDs",
@@ -276,10 +276,10 @@ public class GuiQuestLinesEditor extends GuiScreenCanvas implements IPEventListe
             payload.setInteger("action", 1);
             NetChapterEdit.sendEdit(payload);
         } else if (btn.getButtonID() == 7 && btn instanceof PanelButtonStorage) { // Move Up
-            Map.Entry<UUID, IQuestLine> entry = ((PanelButtonStorage<Map.Entry<UUID, IQuestLine>>)btn).getStoredValue();
+            Map.Entry<UUID, IQuestLine> entry = ((PanelButtonStorage<Map.Entry<UUID, IQuestLine>>) btn).getStoredValue();
             int order = QuestLineDatabase.INSTANCE.getOrderIndex(entry.getKey());
             if (order > 0) SendReorder(order);
-        } else if(btn.getButtonID() == 8) { // Big Description Editor
+        } else if (btn.getButtonID() == 8) { // Big Description Editor
             mc.displayGuiScreen(new GuiTextEditor(this, tfDesc.getRawText(), value -> {
                 if (selected != null) {
                     tfDesc.setText(value);

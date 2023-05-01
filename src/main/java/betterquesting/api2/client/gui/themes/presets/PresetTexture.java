@@ -87,14 +87,6 @@ public enum PresetTexture {
         this.key = new ResourceLocation(BetterQuesting.MODID, key);
     }
 
-    public IGuiTexture getTexture() {
-        return ThemeRegistry.INSTANCE.getTexture(this.key);
-    }
-
-    public ResourceLocation getKey() {
-        return this.key;
-    }
-
     public static void registerTextures(IThemeRegistry reg) {
         reg.setDefaultTexture(PANEL_MAIN.key, new SlicedTexture(TX_SIMPLE, new GuiRectangle(0, 0, 12, 12), new GuiPadding(4, 4, 4, 4)));
         reg.setDefaultTexture(PANEL_DARK.key, new SlicedTexture(TX_SIMPLE, new GuiRectangle(12, 0, 12, 12), new GuiPadding(4, 4, 4, 4)));
@@ -158,5 +150,13 @@ public enum PresetTexture {
         reg.setDefaultTexture(TEXT_BOX_2.key, new SlicedTexture(TX_SIMPLE, new GuiRectangle(16, 28, 8, 8), new GuiPadding(1, 1, 1, 1)).setSliceMode(SliceMode.SLICED_STRETCH));
 
         reg.setDefaultTexture(TOOLTIP_BG.key, new SlicedTexture(TX_SIMPLE, new GuiRectangle(204, 0, 12, 12), new GuiPadding(2, 2, 2, 2)).setSliceMode(SliceMode.SLICED_STRETCH));
+    }
+
+    public IGuiTexture getTexture() {
+        return ThemeRegistry.INSTANCE.getTexture(this.key);
+    }
+
+    public ResourceLocation getKey() {
+        return this.key;
     }
 }

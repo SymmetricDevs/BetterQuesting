@@ -54,6 +54,19 @@ public class BigItemStack {
         this.stackSize = amount;
     }
 
+    public BigItemStack(@Nonnull NBTTagCompound tags) // Can load normal ItemStack NBTs. Does NOT deal with placeholders
+    {
+        NBTTagCompound itemNBT = tags.copy();
+        itemNBT.setInteger("Count", 1);
+        if (tags.hasKey("id", 99)) {
+            itemNBT.setString("id", String.valueOf(tags.getShort("id")));
+        }
+        this.stackSize = tags.getInteger("Count");
+        this.setOreDict(tags.getString("OreDict"));
+        this.baseStack = new ItemStack(itemNBT); // Minecraft does the ID conversions for me
+        if (tags.getShort("Damage") < 0) this.baseStack.setItemDamage(OreDictionary.WILDCARD_VALUE);
+    }
+
     /**
      * @return ItemStack this BigItemStack is based on. Changing the base stack size does NOT affect the BigItemStack's size
      */
@@ -70,15 +83,15 @@ public class BigItemStack {
         return this.oreDict;
     }
 
-    @Nonnull
-    public OreIngredient getOreIngredient() {
-        return this.oreIng;
-    }
-
     public BigItemStack setOreDict(@Nonnull String ore) {
         this.oreDict = ore;
         this.oreIng = ore.length() <= 0 ? NO_ORE : new OreIngredient(ore);
         return this;
+    }
+
+    @Nonnull
+    public OreIngredient getOreIngredient() {
+        return this.oreIng;
     }
 
     /**
@@ -135,19 +148,6 @@ public class BigItemStack {
         } else {
             return super.equals(stack);
         }
-    }
-
-    public BigItemStack(@Nonnull NBTTagCompound tags) // Can load normal ItemStack NBTs. Does NOT deal with placeholders
-    {
-        NBTTagCompound itemNBT = tags.copy();
-        itemNBT.setInteger("Count", 1);
-        if (tags.hasKey("id", 99)) {
-            itemNBT.setString("id", "" + tags.getShort("id"));
-        }
-        this.stackSize = tags.getInteger("Count");
-        this.setOreDict(tags.getString("OreDict"));
-        this.baseStack = new ItemStack(itemNBT); // Minecraft does the ID conversions for me
-        if (tags.getShort("Damage") < 0) this.baseStack.setItemDamage(OreDictionary.WILDCARD_VALUE);
     }
 
     public NBTTagCompound writeToNBT(NBTTagCompound tags) {

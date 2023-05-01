@@ -21,6 +21,7 @@ public class QuestTranslation {
      * comparison to check if a key is missing.
      */
     private static final Map<String, String> translations;
+
     static {
         translations = I18n.i18nLocale.properties;
     }
@@ -36,6 +37,7 @@ public class QuestTranslation {
     public static String translateTrimmed(String text, Object... args) {
         return translate(text, args).replaceAll("\r", "");
     }
+
     public static String buildQuestNameKey(UUID questId) {
         return String.format(QUEST_NAME_KEY, questId);
     }

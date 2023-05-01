@@ -34,11 +34,10 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class TaskInteractItem implements ITask {
+    public final NbtBlockType targetBlock = new NbtBlockType(Blocks.AIR);
     private final Set<UUID> completeUsers = new TreeSet<>();
     private final TreeMap<UUID, Integer> userProgress = new TreeMap<>();
-
     public BigItemStack targetItem = new BigItemStack(Items.AIR);
-    public final NbtBlockType targetBlock = new NbtBlockType(Blocks.AIR);
     public boolean partialMatch = true;
     public boolean ignoreNBT = false;
     public boolean useMainHand = true;

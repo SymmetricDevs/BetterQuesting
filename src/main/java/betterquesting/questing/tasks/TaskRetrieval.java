@@ -33,8 +33,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class TaskRetrieval implements ITaskInventory, IItemTask {
-    private final Set<UUID> completeUsers = new TreeSet<>();
     public final NonNullList<BigItemStack> requiredItems = NonNullList.create();
+    private final Set<UUID> completeUsers = new TreeSet<>();
     private final TreeMap<UUID, int[]> userProgress = new TreeMap<>();
     public boolean partialMatch = true;
     public boolean ignoreNBT = false;

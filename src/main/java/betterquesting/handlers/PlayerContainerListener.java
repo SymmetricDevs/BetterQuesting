@@ -21,6 +21,11 @@ import java.util.UUID;
 
 public class PlayerContainerListener implements IContainerListener {
     private static final HashMap<UUID, PlayerContainerListener> LISTEN_MAP = new HashMap<>();
+    private EntityPlayer player;
+
+    private PlayerContainerListener(@Nonnull EntityPlayer player) {
+        this.player = player;
+    }
 
     public static void refreshListener(@Nonnull EntityPlayer player) {
         UUID uuid = QuestingAPI.getQuestingUUID(player);
@@ -36,12 +41,6 @@ public class PlayerContainerListener implements IContainerListener {
             player.inventoryContainer.addListener(listener);
         } catch (Exception ignored) {
         }
-    }
-
-    private EntityPlayer player;
-
-    private PlayerContainerListener(@Nonnull EntityPlayer player) {
-        this.player = player;
     }
 
     @Override

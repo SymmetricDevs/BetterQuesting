@@ -20,9 +20,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class ToolboxToolGrab implements IToolboxTool {
-    private CanvasQuestLine gui;
-
     private final NonNullList<GrabEntry> grabList = NonNullList.create();
+    private CanvasQuestLine gui;
 
     @Override
     public void initTool(CanvasQuestLine gui) {

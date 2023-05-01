@@ -40,7 +40,7 @@ public class PanelButtonQuest extends PanelButtonStorage<Map.Entry<UUID, IQuest>
         player = Minecraft.getMinecraft().player;
         EnumQuestState qState = value == null ? EnumQuestState.LOCKED : value.getValue().getState(player);
         IGuiColor txIconCol = null;
-        boolean main = value == null ? false : value.getValue().getProperty(NativeProps.MAIN);
+        boolean main = value != null && value.getValue().getProperty(NativeProps.MAIN);
         boolean lock = false;
 
         switch (qState) {
@@ -132,7 +132,7 @@ public class PanelButtonQuest extends PanelButtonStorage<Map.Entry<UUID, IQuest>
                 }
             }
         } else if (!quest.isUnlocked(playerID)) {
-            list.add(TextFormatting.RED + "" + TextFormatting.UNDERLINE + QuestTranslation.translate("betterquesting.tooltip.requires") + " (" + quest.getProperty(NativeProps.LOGIC_QUEST).toString().toUpperCase() + ")");
+            list.add(TextFormatting.RED + String.valueOf(TextFormatting.UNDERLINE) + QuestTranslation.translate("betterquesting.tooltip.requires") + " (" + quest.getProperty(NativeProps.LOGIC_QUEST).toString().toUpperCase() + ")");
 
             // TODO: Make this lookup unnecessary
             QuestDatabase.INSTANCE.filterKeys(quest.getRequirements()).entrySet().stream()

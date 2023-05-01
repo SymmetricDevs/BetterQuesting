@@ -5,5 +5,5 @@ public enum EnumQuestState {
     UNLOCKED,
     UNCLAIMED,
     COMPLETED,
-    REPEATABLE;
+    REPEATABLE
 }

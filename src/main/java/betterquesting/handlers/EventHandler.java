@@ -93,6 +93,37 @@ public class EventHandler {
     public static final EventHandler INSTANCE = new EventHandler();
 
     private static final String SPAWN_WITH_QUEST_BOOK = BetterQuesting.MODID + ".questbook";
+    private final ArrayDeque<EntityPlayerMP> opQueue = new ArrayDeque<>();
+    private boolean openToLAN = false;
+
+    // TODO: Create a new message inbox system for these things. On screen popups aren't ideal in combat
+    private static void postPresetNotice(IQuest quest, EntityPlayer player, int preset) {
+        if (!(player instanceof EntityPlayerMP)) return;
+        ItemStack icon = quest.getProperty(NativeProps.ICON).getBaseStack();
+        String mainText = "";
+        String subText = quest.getProperty(NativeProps.NAME);
+        String sound = "";
+
+        switch (preset) {
+            case 0: {
+                mainText = "betterquesting.notice.unlock";
+                sound = quest.getProperty(NativeProps.SOUND_UNLOCK);
+                break;
+            }
+            case 1: {
+                mainText = "betterquesting.notice.update";
+                sound = quest.getProperty(NativeProps.SOUND_UPDATE);
+                break;
+            }
+            case 2: {
+                mainText = "betterquesting.notice.complete";
+                sound = quest.getProperty(NativeProps.SOUND_COMPLETE);
+                break;
+            }
+        }
+
+        NetNotices.sendNotice(quest.getProperty(NativeProps.GLOBAL) ? null : new EntityPlayerMP[]{(EntityPlayerMP) player}, icon, mainText, subText, sound);
+    }
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
@@ -110,7 +141,6 @@ public class EventHandler {
             }
         }
     }
-
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
@@ -271,35 +301,6 @@ public class EventHandler {
         qc.cleanAllQuests();
     }
 
-    // TODO: Create a new message inbox system for these things. On screen popups aren't ideal in combat
-    private static void postPresetNotice(IQuest quest, EntityPlayer player, int preset) {
-        if (!(player instanceof EntityPlayerMP)) return;
-        ItemStack icon = quest.getProperty(NativeProps.ICON).getBaseStack();
-        String mainText = "";
-        String subText = quest.getProperty(NativeProps.NAME);
-        String sound = "";
-
-        switch (preset) {
-            case 0: {
-                mainText = "betterquesting.notice.unlock";
-                sound = quest.getProperty(NativeProps.SOUND_UNLOCK);
-                break;
-            }
-            case 1: {
-                mainText = "betterquesting.notice.update";
-                sound = quest.getProperty(NativeProps.SOUND_UPDATE);
-                break;
-            }
-            case 2: {
-                mainText = "betterquesting.notice.complete";
-                sound = quest.getProperty(NativeProps.SOUND_COMPLETE);
-                break;
-            }
-        }
-
-        NetNotices.sendNotice(quest.getProperty(NativeProps.GLOBAL) ? null : new EntityPlayerMP[]{(EntityPlayerMP) player}, icon, mainText, subText, sound);
-    }
-
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.getModID().equals(BetterQuesting.MODID)) {
@@ -323,7 +324,7 @@ public class EventHandler {
     @SubscribeEvent
     public void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
 
-        if(BQ_Settings.spawnWithQuestBook) {
+        if (BQ_Settings.spawnWithQuestBook) {
             NBTTagCompound playerData = event.player.getEntityData();
             NBTTagCompound data = playerData.hasKey(EntityPlayer.PERSISTED_NBT_TAG) ? playerData.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG) : new NBTTagCompound();
 
@@ -417,9 +418,6 @@ public class EventHandler {
                 opQueue.add(playerMP); // Has to be delayed until after the event when the command has executed
         }
     }
-
-    private final ArrayDeque<EntityPlayerMP> opQueue = new ArrayDeque<>();
-    private boolean openToLAN = false;
 
     @SubscribeEvent
     public void onServerTick(ServerTickEvent event) {
@@ -631,7 +629,7 @@ public class EventHandler {
 
         Set<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).filterKeys(pInfo.getSharedQuests()).entrySet();
 
-        for (Map.Entry<UUID, IQuest> entry : actQuest){
+        for (Map.Entry<UUID, IQuest> entry : actQuest) {
             for (DBEntry<ITask> task : entry.getValue().getTasks().getEntries()) {
                 if (task.getValue() instanceof TaskTame)
                     ((TaskTame) task.getValue()).onAnimalTamed(pInfo, entry, event.getEntityLiving());

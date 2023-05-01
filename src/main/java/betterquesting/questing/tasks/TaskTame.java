@@ -28,8 +28,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class TaskTame implements ITask {
-    private final Set<UUID> completeUsers = new TreeSet<>();
     public final HashMap<UUID, Integer> userProgress = new HashMap<>();
+    private final Set<UUID> completeUsers = new TreeSet<>();
     public String idName = "minecraft:wolf";
     public int required = 1;
     public boolean ignoreNBT = true;
@@ -219,7 +219,7 @@ public class TaskTame implements ITask {
     }
 
     private List<Tuple<UUID, Integer>> getBulkProgress(@Nonnull List<UUID> uuids) {
-        if (uuids.size() <= 0) return Collections.emptyList();
+        if (uuids.isEmpty()) return Collections.emptyList();
         List<Tuple<UUID, Integer>> list = new ArrayList<>();
         uuids.forEach((key) -> list.add(new Tuple<>(key, getUsersProgress(key))));
         return list;

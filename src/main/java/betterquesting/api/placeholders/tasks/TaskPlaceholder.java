@@ -15,22 +15,22 @@ import java.util.Map;
 import java.util.UUID;
 
 public class TaskPlaceholder implements ITask {
-    private NBTTagCompound nbtData = new NBTTagCompound();
-
-    public void setTaskConfigData(NBTTagCompound nbt) {
-        nbtData.setTag("orig_data", nbt);
-    }
-
-    public void setTaskProgressData(NBTTagCompound nbt) {
-        nbtData.setTag("orig_prog", nbt);
-    }
+    private final NBTTagCompound nbtData = new NBTTagCompound();
 
     public NBTTagCompound getTaskConfigData() {
         return nbtData.getCompoundTag("orig_data");
     }
 
+    public void setTaskConfigData(NBTTagCompound nbt) {
+        nbtData.setTag("orig_data", nbt);
+    }
+
     public NBTTagCompound getTaskProgressData() {
         return nbtData.getCompoundTag("orig_prog");
+    }
+
+    public void setTaskProgressData(NBTTagCompound nbt) {
+        nbtData.setTag("orig_prog", nbt);
     }
 
     @Override

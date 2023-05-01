@@ -27,12 +27,11 @@ import java.util.List;
 import java.util.UUID;
 
 public class ToolboxToolScale implements IToolboxTool {
-    private CanvasQuestLine gui;
-
     private final NonNullList<GrabEntry> grabList = NonNullList.create();
     private final GuiRectangle scaleBounds = new GuiRectangle(0, 0, 0, 0);
-    private IGuiLine selLine = new BoxLine();
-    private IGuiColor selCol = new GuiColorPulse(0xFFFFFFFF, 0xFF000000, 2F, 0F);
+    private CanvasQuestLine gui;
+    private final IGuiLine selLine = new BoxLine();
+    private final IGuiColor selCol = new GuiColorPulse(0xFFFFFFFF, 0xFF000000, 2F, 0F);
 
     @Override
     public void initTool(CanvasQuestLine gui) {

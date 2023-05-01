@@ -23,9 +23,20 @@ import net.minecraft.util.NonNullList;
 import java.util.*;
 
 public class ToolboxToolCopy implements IToolboxTool {
+    private final NonNullList<GrabEntry> grabList = NonNullList.create();
     private CanvasQuestLine gui = null;
 
-    private final NonNullList<GrabEntry> grabList = NonNullList.create();
+    private static Set<UUID> getNextIDs(int num) {
+        Set<UUID> nextIds = new HashSet<>();
+
+        while (nextIds.size() < num) {
+            // In the extremely unlikely event of a collision,
+            // we'll handle it automatically due to nextIds being a Set
+            nextIds.add(QuestDatabase.INSTANCE.generateKey());
+        }
+
+        return nextIds;
+    }
 
     @Override
     public void initTool(CanvasQuestLine gui) {
@@ -152,15 +163,13 @@ public class ToolboxToolCopy implements IToolboxTool {
 
             // We can't tamper with the original so we change it in NBT post-write
             NBTTagList tagList = new NBTTagList();
-            for (UUID questID : reqs)
-            {
+            for (UUID questID : reqs) {
                 NBTTagCompound tag = NBTConverter.UuidValueType.QUEST.writeId(questID);
 
                 // We need the pre-remapped ID so that we can look up the prerequisite type.
                 UUID oldID = remappedIDs.inverse().getOrDefault(questID, questID);
                 IQuest.RequirementType requirementType = quest.getRequirementType(oldID);
-                if (requirementType != IQuest.RequirementType.NORMAL)
-                {
+                if (requirementType != IQuest.RequirementType.NORMAL) {
                     tag.setByte("type", requirementType.id());
                 }
 
@@ -195,18 +204,6 @@ public class ToolboxToolCopy implements IToolboxTool {
         NetChapterEdit.sendEdit(chPayload);
 
         return true;
-    }
-
-    private static Set<UUID> getNextIDs(int num) {
-        Set<UUID> nextIds = new HashSet<>();
-
-        while (nextIds.size() < num) {
-            // In the extremely unlikely event of a collision,
-            // we'll handle it automatically due to nextIds being a Set
-            nextIds.add(QuestDatabase.INSTANCE.generateKey());
-        }
-
-        return nextIds;
     }
 
     @Override

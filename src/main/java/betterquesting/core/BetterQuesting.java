@@ -54,28 +54,22 @@ public class BetterQuesting {
 
     // Used for some legacy compat
     public static final String MODID_STD = "bq_standard";
-
-    public static boolean hasJEI = false;
-
     // TODO: Possibly make use of this in future
     private static final String MCL_API = "Yo1nkbXn7uVptLoL3GpkAaT7HsU8QFGJ";
-
+    public static boolean hasJEI = false;
     @Instance(MODID)
     public static BetterQuesting instance;
 
     @SidedProxy(clientSide = "betterquesting.core.proxies.ClientProxy", serverSide = "betterquesting.core.proxies.CommonProxy")
     public static CommonProxy proxy;
-    public SimpleNetworkWrapper network;
     public static Logger logger;
-
     public static CreativeTabs tabQuesting = new CreativeTabQuesting();
-
     public static Item extraLife = new ItemExtraLife();
     public static Item guideBook = new ItemGuideBook();
     public static Item lootChest = new ItemLootChest();
     public static Item questBook = new ItemQuestBook();
-
     public static Block submitStation = new BlockSubmitStation();
+    public SimpleNetworkWrapper network;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {

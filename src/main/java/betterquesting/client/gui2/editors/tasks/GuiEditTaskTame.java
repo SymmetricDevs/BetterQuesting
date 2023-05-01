@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class GuiEditTaskTame extends GuiScreenCanvas implements IVolatileScreen {
+    private static final ResourceLocation QUEST_EDIT = new ResourceLocation("betterquesting:quest_edit"); // TODO: Really need to make the native packet types accessible in the API
     private final Map.Entry<UUID, IQuest> quest;
     private final TaskTame task;
 
@@ -70,7 +71,7 @@ public class GuiEditTaskTame extends GuiScreenCanvas implements IVolatileScreen 
         this.addPanel(new PanelEntityPreview(new GuiTransform(GuiAlign.HALF_TOP, new GuiPadding(16, 32, 16, 0), 0), target).setRotationDriven(new ValueFuncIO<>(() -> 15F), new ValueFuncIO<>(() -> (float) (Minecraft.getSystemTime() % 30000L / 30000D * 360D)))); // Preview works with null. It's fine (or should be)
 
         cvBackground.addPanel(new PanelTextBox(new GuiTransform(GuiAlign.MID_CENTER, -100, 4, 96, 12, 0), QuestTranslation.translate("bq_standard.gui.amount")).setAlignment(2).setColor(PresetColor.TEXT_MAIN.getColor()));
-        cvBackground.addPanel(new PanelTextField<>(new GuiTransform(GuiAlign.MID_CENTER, 0, 0, 100, 16, 0), "" + task.required, FieldFilterNumber.INT).setCallback(value -> task.required = value));
+        cvBackground.addPanel(new PanelTextField<>(new GuiTransform(GuiAlign.MID_CENTER, 0, 0, 100, 16, 0), String.valueOf(task.required), FieldFilterNumber.INT).setCallback(value -> task.required = value));
 
         final GuiScreen screenRef = this;
         cvBackground.addPanel(new PanelButton(new GuiTransform(GuiAlign.MID_CENTER, -100, 16, 200, 16, 0), -1, QuestTranslation.translate("bq_standard.btn.select_mob")) {
@@ -103,8 +104,6 @@ public class GuiEditTaskTame extends GuiScreenCanvas implements IVolatileScreen 
             }
         });
     }
-
-    private static final ResourceLocation QUEST_EDIT = new ResourceLocation("betterquesting:quest_edit"); // TODO: Really need to make the native packet types accessible in the API
 
     private void sendChanges() {
         NBTTagCompound payload = new NBTTagCompound();

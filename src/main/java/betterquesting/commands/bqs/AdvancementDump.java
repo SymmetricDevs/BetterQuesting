@@ -22,7 +22,7 @@ import java.util.Map.Entry;
 public class AdvancementDump {
     public static final AdvancementDump INSTANCE = new AdvancementDump();
 
-    private HashMap<Advancement, Map.Entry<UUID, IQuest>> idMap = new HashMap<>();
+    private final HashMap<Advancement, Map.Entry<UUID, IQuest>> idMap = new HashMap<>();
 
     public void dumpAdvancements(MinecraftServer server) {
         idMap.clear();

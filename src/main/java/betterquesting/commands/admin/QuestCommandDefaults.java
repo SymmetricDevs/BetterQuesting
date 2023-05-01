@@ -57,77 +57,9 @@ public class QuestCommandDefaults extends QuestCommandBase {
     public static final String MULTI_QUEST_LINE_DIRECTORY = "MultipleQuestLine";
     public static final String NO_QUEST_LINE_DIRECTORY = "NoQuestLine";
 
-    @Override
-    public String getUsageSuffix() {
-        return "[save|load|set] [file_name]";
-    }
-
-    @Override
-    public boolean validArgs(String[] args) {
-        return args.length == 2 || args.length == 3;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<String> autoComplete(MinecraftServer server, ICommandSender sender, String[] args) {
-        List<String> list = new ArrayList<>();
-
-        if (args.length == 2) {
-            return CommandBase.getListOfStringsMatchingLastWord(args, "save", "savelegacy", "load", "set");
-        } else if (args.length == 3) {
-            list.add(DEFAULT_FILE);
-        }
-
-        return list;
-    }
-
-    @Override
-    public String getCommand() {
-        return "default";
-    }
-
-    @Override
-    public void runCommand(MinecraftServer server, CommandBase command, ICommandSender sender, String[] args) throws CommandException {
-        String databaseName;
-        File dataDir;
-        // The location of the legacy single huge file.
-        File legacyFile;
-        if (args.length == 3 && !args[2].equalsIgnoreCase(DEFAULT_FILE)) {
-            databaseName = args[2];
-            dataDir = new File(BQ_Settings.defaultDir, "saved_quests/" + args[2]);
-            legacyFile = new File(BQ_Settings.defaultDir, "saved_quests/" + args[2] + ".json");
-        } else {
-            databaseName = null;
-            dataDir = new File(BQ_Settings.defaultDir, DEFAULT_FILE);
-            legacyFile = new File(BQ_Settings.defaultDir, DEFAULT_FILE + ".json");
-        }
-
-        if (args[1].equalsIgnoreCase("save")) {
-            save(sender, databaseName, dataDir);
-
-        } else if (args[1].equalsIgnoreCase("savelegacy")) {
-            saveLegacy(sender, databaseName, legacyFile);
-
-        } else if (args[1].equalsIgnoreCase("load")) {
-            if (!dataDir.exists() && legacyFile.exists()) {
-                loadLegacy(sender, databaseName, legacyFile, false);
-            } else {
-                load(sender, databaseName, dataDir, false);
-            }
-
-        } else if (args[1].equalsIgnoreCase("set") && args.length == 3) {
-            if (!dataDir.exists() && legacyFile.exists()) {
-                setLegacy(sender, databaseName, legacyFile);
-            } else {
-                set(sender, databaseName, dataDir);
-            }
-
-        } else {
-            throw getException(command);
-        }
-    }
-
-    /** Helper method that handles having null sender. */
+    /**
+     * Helper method that handles having null sender.
+     */
     private static void sendChatMessage(
             @Nullable ICommandSender sender, String translationKey, Object... args) {
         if (sender == null) {
@@ -302,7 +234,9 @@ public class QuestCommandDefaults extends QuestCommandBase {
         }
     }
 
-    /** This is unused by default, but available if needed. The single file is easier to search. */
+    /**
+     * This is unused by default, but available if needed. The single file is easier to search.
+     */
     public static void saveLegacy(@Nullable ICommandSender sender, @Nullable String databaseName, File legacyFile) {
         boolean editMode = QuestSettings.INSTANCE.getProperty(NativeProps.EDIT_MODE);
 
@@ -534,6 +468,76 @@ public class QuestCommandDefaults extends QuestCommandBase {
         quests.entrySet().forEach(addQuest);
 
         return orderedQuests;
+    }
+
+    @Override
+    public String getUsageSuffix() {
+        return "[save|load|set] [file_name]";
+    }
+
+    @Override
+    public boolean validArgs(String[] args) {
+        return args.length == 2 || args.length == 3;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<String> autoComplete(MinecraftServer server, ICommandSender sender, String[] args) {
+        List<String> list = new ArrayList<>();
+
+        if (args.length == 2) {
+            return CommandBase.getListOfStringsMatchingLastWord(args, "save", "savelegacy", "load", "set");
+        } else if (args.length == 3) {
+            list.add(DEFAULT_FILE);
+        }
+
+        return list;
+    }
+
+    @Override
+    public String getCommand() {
+        return "default";
+    }
+
+    @Override
+    public void runCommand(MinecraftServer server, CommandBase command, ICommandSender sender, String[] args) throws CommandException {
+        String databaseName;
+        File dataDir;
+        // The location of the legacy single huge file.
+        File legacyFile;
+        if (args.length == 3 && !args[2].equalsIgnoreCase(DEFAULT_FILE)) {
+            databaseName = args[2];
+            dataDir = new File(BQ_Settings.defaultDir, "saved_quests/" + args[2]);
+            legacyFile = new File(BQ_Settings.defaultDir, "saved_quests/" + args[2] + ".json");
+        } else {
+            databaseName = null;
+            dataDir = new File(BQ_Settings.defaultDir, DEFAULT_FILE);
+            legacyFile = new File(BQ_Settings.defaultDir, DEFAULT_FILE + ".json");
+        }
+
+        if (args[1].equalsIgnoreCase("save")) {
+            save(sender, databaseName, dataDir);
+
+        } else if (args[1].equalsIgnoreCase("savelegacy")) {
+            saveLegacy(sender, databaseName, legacyFile);
+
+        } else if (args[1].equalsIgnoreCase("load")) {
+            if (!dataDir.exists() && legacyFile.exists()) {
+                loadLegacy(sender, databaseName, legacyFile, false);
+            } else {
+                load(sender, databaseName, dataDir, false);
+            }
+
+        } else if (args[1].equalsIgnoreCase("set") && args.length == 3) {
+            if (!dataDir.exists() && legacyFile.exists()) {
+                setLegacy(sender, databaseName, legacyFile);
+            } else {
+                set(sender, databaseName, dataDir);
+            }
+
+        } else {
+            throw getException(command);
+        }
     }
 
     @Override

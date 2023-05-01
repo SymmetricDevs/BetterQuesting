@@ -35,14 +35,12 @@ import java.util.List;
 import java.util.UUID;
 
 public class GuiDesigner extends GuiScreenCanvas implements IVolatileScreen, INeedsRefresh, IPEventListener {
+    private final UUID lineID;
+    private final List<IToolTab> tabList = new ArrayList<>();
     // Not final because I hope to support hot swapping in future
     private IQuestLine questLine;
-    private final UUID lineID;
-
     private PanelToolController toolController;
     private IGuiCanvas cvTray;
-
-    private final List<IToolTab> tabList = new ArrayList<>();
     private PanelTextBox tabTitle;
     private IGuiPanel lastTabPanel;
     private int tabIdx = 0;

@@ -10,16 +10,22 @@ import java.util.UUID;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 
-/** Database that uses randomly-generated UUIDs as keys. */
+/**
+ * Database that uses randomly-generated UUIDs as keys.
+ */
 public interface IUuidDatabase<T> extends BiMap<UUID, T> {
-    /** Converts a legacy integer ID to a UUID. */
+    /**
+     * Converts a legacy integer ID to a UUID.
+     */
     static UUID convertLegacyId(int legacyId) {
         // Negative legacy IDs are invalid, and are used to indicate an unset ID.
         Preconditions.checkArgument(legacyId >= 0);
         return new UUID(0L, legacyId);
     }
 
-    /** Returns an unused UUID. */
+    /**
+     * Returns an unused UUID.
+     */
     UUID generateKey();
 
     @Nullable

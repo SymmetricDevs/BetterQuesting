@@ -67,40 +67,30 @@ import java.util.*;
 
 public class GuiQuestLines extends GuiScreenCanvas implements IPEventListener, INeedsRefresh {
 
-    private ScrollPosition scrollPosition;
-
-    private IQuestLine selectedLine = null;
     private static UUID selectedLineId = null;
-
-    private final List<Tuple<Map.Entry<UUID, IQuestLine>, Integer>> visChapters = new ArrayList<>();
-
-    private CanvasQuestLine cvQuest;
-
     // Keep these separate for now
     private static CanvasHoverTray cvChapterTray;
     private static CanvasHoverTray cvDescTray;
     private static CanvasHoverTray cvFrame;
-
+    private static boolean trayLock;
+    private static boolean viewMode;
+    private final List<Tuple<Map.Entry<UUID, IQuestLine>, Integer>> visChapters = new ArrayList<>();
+    private final List<PanelButtonStorage<Map.Entry<UUID, IQuestLine>>> btnListRef = new ArrayList<>();
+    private ScrollPosition scrollPosition;
+    private IQuestLine selectedLine = null;
+    private CanvasQuestLine cvQuest;
     private CanvasScrolling cvDesc;
     private PanelVScrollBar scDesc;
     private CanvasScrolling cvLines;
     private PanelVScrollBar scLines;
-
     private PanelGeneric icoChapter;
     private PanelTextBox txTitle;
     private PanelTextBox txDesc;
     private PanelTextBox completionText;
-
     private PanelButton claimAll;
-
     private PanelButton btnDesign;
-
-    private static boolean trayLock;
-    private static boolean viewMode;
     private int questsCompleted = 0;
     private int totalQuests = 0;
-
-    private final List<PanelButtonStorage<Map.Entry<UUID, IQuestLine>>> btnListRef = new ArrayList<>();
 
     public GuiQuestLines(GuiScreen parent) {
         super(parent);
@@ -431,7 +421,7 @@ public class GuiQuestLines extends GuiScreenCanvas implements IPEventListener, I
         if (cvQuest.getQuestButtons().isEmpty()) return;
 
         List<UUID> claimIdList = new ArrayList<>();
-        for (PanelButtonQuest pbQuest : cvQuest.getQuestButtons()){
+        for (PanelButtonQuest pbQuest : cvQuest.getQuestButtons()) {
             IQuest q = pbQuest.getStoredValue().getValue();
             if (q.getRewards().size() > 0 && q.canClaim(mc.player)) {
                 claimIdList.add(pbQuest.getStoredValue().getKey());
@@ -457,7 +447,7 @@ public class GuiQuestLines extends GuiScreenCanvas implements IPEventListener, I
         if (btn.getButtonID() == 2 && btn instanceof PanelButtonStorage) // Quest Instance Select
         {
             @SuppressWarnings("unchecked")
-            Map.Entry<UUID, IQuest> quest = ((PanelButtonStorage<Map.Entry<UUID, IQuest>>)btn).getStoredValue();
+            Map.Entry<UUID, IQuest> quest = ((PanelButtonStorage<Map.Entry<UUID, IQuest>>) btn).getStoredValue();
             GuiHome.bookmark = new GuiQuest(this, quest.getKey());
 
             mc.displayGuiScreen(GuiHome.bookmark);
@@ -591,7 +581,7 @@ public class GuiQuestLines extends GuiScreenCanvas implements IPEventListener, I
         questsCompleted = 0;
         totalQuests = 0;
 
-        for(Map.Entry<UUID, IQuestLineEntry> entry : selectedLine.entrySet()) {
+        for (Map.Entry<UUID, IQuestLineEntry> entry : selectedLine.entrySet()) {
             IQuest quest = QuestingAPI.getAPI(ApiReference.QUEST_DB).get(entry.getKey());
 
             if (quest.getProperty(NativeProps.LOGIC_QUEST) == EnumLogic.XOR) {
@@ -706,12 +696,12 @@ public class GuiQuestLines extends GuiScreenCanvas implements IPEventListener, I
         mc.displayGuiScreen(guiQuestSearch);
     }
 
-    public static class ScrollPosition{
+    public static class ScrollPosition {
+        private int chapterScrollY;
+
         public ScrollPosition(int chapterScrollY) {
             this.chapterScrollY = chapterScrollY;
         }
-
-        private int chapterScrollY;
 
         public int getChapterScrollY() {
             return chapterScrollY;

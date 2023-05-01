@@ -14,7 +14,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/** Database that uses randomly-generated UUIDs as keys. */
+/**
+ * Database that uses randomly-generated UUIDs as keys.
+ */
 public class UuidDatabase<T> implements IUuidDatabase<T> {
     private final HashBiMap<UUID, T> database = HashBiMap.create();
 

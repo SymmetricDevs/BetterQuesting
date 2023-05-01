@@ -40,6 +40,39 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 
 public class ClientProxy extends CommonProxy {
+    @SideOnly(Side.CLIENT)
+    public static void registerBlockModel(Block block) {
+        registerBlockModel(block, 0, block.getRegistryName().toString());
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void registerBlockModel(Block block, int meta, String name) {
+        Item item = Item.getItemFromBlock(block);
+        ModelResourceLocation model = new ModelResourceLocation(name, "inventory");
+
+        if (!name.equals(item.getRegistryName().toString())) {
+            ModelBakery.registerItemVariants(item, model);
+        }
+
+        ModelLoader.setCustomModelResourceLocation(item, meta, model);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void registerItemModel(Item item) {
+        registerItemModel(item, 0, item.getRegistryName().toString());
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static void registerItemModel(Item item, int meta, String name) {
+        ModelResourceLocation model = new ModelResourceLocation(name, "inventory");
+
+        if (!name.equals(item.getRegistryName().toString())) {
+            ModelBakery.registerItemVariants(item, model);
+        }
+
+        ModelLoader.setCustomModelResourceLocation(item, meta, model);
+    }
+
     @Override
     public boolean isClient() {
         return true;
@@ -98,23 +131,6 @@ public class ClientProxy extends CommonProxy {
     }
 
     @SideOnly(Side.CLIENT)
-    public static void registerBlockModel(Block block) {
-        registerBlockModel(block, 0, block.getRegistryName().toString());
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static void registerBlockModel(Block block, int meta, String name) {
-        Item item = Item.getItemFromBlock(block);
-        ModelResourceLocation model = new ModelResourceLocation(name, "inventory");
-
-        if (!name.equals(item.getRegistryName().toString())) {
-            ModelBakery.registerItemVariants(item, model);
-        }
-
-        ModelLoader.setCustomModelResourceLocation(item, meta, model);
-    }
-
-    @SideOnly(Side.CLIENT)
     private void registerItemModelSubtypes(Item item, int metaStart, int metaEnd, String name) {
         if (metaStart > metaEnd) {
             int tmp = metaStart;
@@ -125,22 +141,6 @@ public class ClientProxy extends CommonProxy {
         for (int m = metaStart; m <= metaEnd; m++) {
             registerItemModel(item, m, name);
         }
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static void registerItemModel(Item item) {
-        registerItemModel(item, 0, item.getRegistryName().toString());
-    }
-
-    @SideOnly(Side.CLIENT)
-    public static void registerItemModel(Item item, int meta, String name) {
-        ModelResourceLocation model = new ModelResourceLocation(name, "inventory");
-
-        if (!name.equals(item.getRegistryName().toString())) {
-            ModelBakery.registerItemVariants(item, model);
-        }
-
-        ModelLoader.setCustomModelResourceLocation(item, meta, model);
     }
 
     @Override

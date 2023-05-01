@@ -157,6 +157,26 @@ public class TaskScoreboard implements ITaskTickable {
         }
     }
 
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IGuiPanel getTaskGui(IGuiRect rect, Map.Entry<UUID, IQuest> quest) {
+        return new PanelTaskScoreboard(rect, this);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public GuiScreen getTaskEditor(GuiScreen parent, Map.Entry<UUID, IQuest> quest) {
+        return new GuiEditTaskScoreboard(parent, quest, this);
+    }
+
+    @Override
+    public List<String> getTextForSearch() {
+        List<String> texts = new ArrayList<>();
+        texts.add(scoreName);
+        texts.add(scoreDisp);
+        return texts;
+    }
+
     public enum ScoreOperation {
         EQUAL("="),
         LESS_THAN("<"),
@@ -193,25 +213,5 @@ public class TaskScoreboard implements ITaskTickable {
 
             return false;
         }
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IGuiPanel getTaskGui(IGuiRect rect, Map.Entry<UUID, IQuest> quest) {
-        return new PanelTaskScoreboard(rect, this);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public GuiScreen getTaskEditor(GuiScreen parent, Map.Entry<UUID, IQuest> quest) {
-        return new GuiEditTaskScoreboard(parent, quest, this);
-    }
-
-    @Override
-    public List<String> getTextForSearch() {
-        List<String> texts = new ArrayList<>();
-        texts.add(scoreName);
-        texts.add(scoreDisp);
-        return texts;
     }
 }

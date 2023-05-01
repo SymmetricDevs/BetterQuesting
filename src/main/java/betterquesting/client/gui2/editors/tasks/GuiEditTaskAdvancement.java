@@ -40,9 +40,9 @@ import java.util.Map;
 import java.util.UUID;
 
 public class GuiEditTaskAdvancement extends GuiScreenCanvas implements IVolatileScreen {
+    private static final ResourceLocation QUEST_EDIT = new ResourceLocation("betterquesting:quest_edit"); // TODO: Really need to make the native packet types accessible in the API
     private final Map.Entry<UUID, IQuest> quest;
     private final TaskAdvancement task;
-
     private ResourceLocation selected;
 
     public GuiEditTaskAdvancement(GuiScreen parent, Map.Entry<UUID, IQuest> quest, TaskAdvancement task) {
@@ -113,8 +113,6 @@ public class GuiEditTaskAdvancement extends GuiScreenCanvas implements IVolatile
             }
         });
     }
-
-    private static final ResourceLocation QUEST_EDIT = new ResourceLocation("betterquesting:quest_edit"); // TODO: Really need to make the native packet types accessible in the API
 
     private void sendChanges() {
         task.advID = selected;

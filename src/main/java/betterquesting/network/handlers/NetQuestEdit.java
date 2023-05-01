@@ -86,7 +86,7 @@ public class NetQuestEdit {
                 break;
             }
             default: {
-                BetterQuesting.logger.log(Level.ERROR, "Invalid quest edit action '" + action + "'. Full payload:\n" + message.getFirst().toString());
+                BetterQuesting.logger.log(Level.ERROR, "Invalid quest edit action '" + action + "'. Full payload:\n" + message.getFirst());
             }
         }
     }

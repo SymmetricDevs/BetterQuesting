@@ -76,7 +76,7 @@ public class NetChapterEdit {
                 break;
             }
             default: {
-                BetterQuesting.logger.log(Level.ERROR, "Invalid chapter edit action '" + action + "'. Full payload:\n" + message.getFirst().toString());
+                BetterQuesting.logger.log(Level.ERROR, "Invalid chapter edit action '" + action + "'. Full payload:\n" + message.getFirst());
             }
         }
     }

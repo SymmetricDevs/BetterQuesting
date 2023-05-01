@@ -41,10 +41,9 @@ public class QuestInstance implements IQuest {
     private final RewardStorage rewards = new RewardStorage();
 
     private final HashMap<UUID, NBTTagCompound> completeUsers = new HashMap<>();
-    private Set<UUID> preRequisites = new HashSet<>();
     private final HashMap<UUID, RequirementType> prereqTypes = new HashMap<>();
-
     private final PropertyContainer qInfo = new PropertyContainer();
+    private Set<UUID> preRequisites = new HashSet<>();
 
     public QuestInstance() {
         this.setupProps();
@@ -252,8 +251,8 @@ public class QuestInstance implements IQuest {
         if (preRequisites.isEmpty()) return true;
 
         int complete = (int) QuestDatabase.INSTANCE.getAll(preRequisites)
-            .filter(quest -> quest.isComplete(uuid))
-            .count();
+                .filter(quest -> quest.isComplete(uuid))
+                .count();
 
         return qInfo.getProperty(NativeProps.LOGIC_QUEST).getResult(complete, preRequisites.size());
     }

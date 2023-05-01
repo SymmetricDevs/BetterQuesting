@@ -35,18 +35,15 @@ import java.util.stream.Collectors;
 public class SaveLoadHandler {
 
     public static SaveLoadHandler INSTANCE = new SaveLoadHandler();
-
+    private final Set<UUID> dirtyPlayers = new ConcurrentSet<>();
     private boolean hasUpdate = false;
     private boolean isDirty = false;
-
     private File fileDatabase = null;
     private File fileProgress = null;
     private File dirProgress = null;
     private File fileParties = null;
     private File fileLives = null;
     private File fileNames = null;
-
-    private final Set<UUID> dirtyPlayers = new ConcurrentSet<>();
 
     public boolean hasUpdate() {
         return this.hasUpdate;

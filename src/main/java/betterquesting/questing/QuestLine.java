@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class QuestLine extends UuidDatabase<IQuestLineEntry> implements IQuestLine {
-    private PropertyContainer info = new PropertyContainer();
+    private final PropertyContainer info = new PropertyContainer();
 
     public QuestLine() {
         setupProps();
@@ -98,7 +98,7 @@ public class QuestLine extends UuidDatabase<IQuestLineEntry> implements IQuestLi
 
         NBTTagList jArr = new NBTTagList();
 
-        for(Map.Entry<UUID, IQuestLineEntry> entry : entrySet()) {
+        for (Map.Entry<UUID, IQuestLineEntry> entry : entrySet()) {
             NBTTagCompound qle = entry.getValue().writeToNBT(new NBTTagCompound());
             NBTConverter.UuidValueType.QUEST.writeId(entry.getKey(), qle);
             jArr.appendTag(qle);

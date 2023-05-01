@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class GuiEditTaskScoreboard extends GuiScreenCanvas {
+    private static final ResourceLocation QUEST_EDIT = new ResourceLocation("betterquesting:quest_edit"); // TODO: Really need to make the native packet types accessible in the API
     private final Map.Entry<UUID, IQuest> quest;
     private final TaskScoreboard task;
 
@@ -71,7 +72,7 @@ public class GuiEditTaskScoreboard extends GuiScreenCanvas {
             }
         });
 
-        cvBackground.addPanel(new PanelTextField<>(new GuiTransform(GuiAlign.MID_CENTER, -50, 0, 150, 16, 0), "" + task.target, FieldFilterNumber.INT).setCallback(value -> task.target = value));
+        cvBackground.addPanel(new PanelTextField<>(new GuiTransform(GuiAlign.MID_CENTER, -50, 0, 150, 16, 0), String.valueOf(task.target), FieldFilterNumber.INT).setCallback(value -> task.target = value));
 
         final GuiScreen screenRef = this;
         cvBackground.addPanel(new PanelButton(new GuiTransform(GuiAlign.MID_CENTER, -100, 16, 200, 16, 0), -1, QuestTranslation.translate("betterquesting.btn.advanced")) {
@@ -89,8 +90,6 @@ public class GuiEditTaskScoreboard extends GuiScreenCanvas {
             }
         });
     }
-
-    private static final ResourceLocation QUEST_EDIT = new ResourceLocation("betterquesting:quest_edit"); // TODO: Really need to make the native packet types accessible in the API
 
     private void sendChanges() {
         NBTTagCompound payload = new NBTTagCompound();

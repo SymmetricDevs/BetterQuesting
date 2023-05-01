@@ -36,9 +36,9 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class TaskFluid implements ITaskInventory, IFluidTask, IItemTask {
-    private final Set<UUID> completeUsers = new TreeSet<>();
     public final NonNullList<FluidStack> requiredFluids = NonNullList.create();
     public final TreeMap<UUID, int[]> userProgress = new TreeMap<>();
+    private final Set<UUID> completeUsers = new TreeSet<>();
     //public boolean partialMatch = true; // Not many ideal ways of implementing this with fluid handlers
     public boolean ignoreNbt = false;
     public boolean consume = true;

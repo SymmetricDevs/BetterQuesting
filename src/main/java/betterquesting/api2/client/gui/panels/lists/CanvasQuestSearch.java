@@ -28,11 +28,11 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class CanvasQuestSearch extends CanvasSearch<QuestSearchEntry, QuestSearchEntry> {
+    private final UUID questingUUID;
     private List<QuestSearchEntry> questList;
     private Consumer<QuestSearchEntry> questOpenCallback;
     private Consumer<QuestSearchEntry> questHighlightCallback;
-    private EntityPlayer player;
-    private final UUID questingUUID;
+    private final EntityPlayer player;
 
     public CanvasQuestSearch(IGuiRect rect, EntityPlayer player) {
         super(rect);
@@ -55,7 +55,7 @@ public class CanvasQuestSearch extends CanvasSearch<QuestSearchEntry, QuestSearc
                 )).collect(Collectors.toList());
     }
 
-    private QuestSearchEntry createQuestSearchEntry(Map.Entry<UUID, IQuestLineEntry> iQuestLineEntryDBEntry, Map.Entry<UUID, IQuestLine> iQuestLineDBEntry){
+    private QuestSearchEntry createQuestSearchEntry(Map.Entry<UUID, IQuestLineEntry> iQuestLineEntryDBEntry, Map.Entry<UUID, IQuestLine> iQuestLineDBEntry) {
         UUID questId = iQuestLineEntryDBEntry.getKey();
         Map.Entry<UUID, IQuest> quest = Maps.immutableEntry(questId, QuestDatabase.INSTANCE.get(questId));
         return new QuestSearchEntry(quest, iQuestLineDBEntry);
@@ -70,8 +70,8 @@ public class CanvasQuestSearch extends CanvasSearch<QuestSearchEntry, QuestSearc
                 results.add(entry);
             }
         } else if (
-                // quest id
-                StringUtils.containsIgnoreCase(String.valueOf(entry.getQuest().getKey()), query)
+            // quest id
+            StringUtils.containsIgnoreCase(String.valueOf(entry.getQuest().getKey()), query)
 
                 // quest title
                 || StringUtils.containsIgnoreCase(value.getProperty(NativeProps.NAME), query)
@@ -79,8 +79,8 @@ public class CanvasQuestSearch extends CanvasSearch<QuestSearchEntry, QuestSearc
 
                 // quest description
                 || StringUtils.containsIgnoreCase(value.getProperty(NativeProps.DESC), query)
-                || StringUtils.containsIgnoreCase(QuestTranslation.translateQuestDescription(entry.getQuest()), query)) {
-
+                || StringUtils.containsIgnoreCase(QuestTranslation.translateQuestDescription(entry.getQuest()), query)
+        ) {
             results.add(entry);
         } else {
             // task-specific search text

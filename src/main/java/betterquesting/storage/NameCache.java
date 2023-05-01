@@ -17,6 +17,7 @@ public final class NameCache implements INameCache {
 
     // TODO: Label known names as offline/online and convert accordingly?
     private final HashMap<UUID, NBTTagCompound> cache = new HashMap<>();
+    private List<String> nameCache = null;
 
     @Override
     public synchronized boolean updateName(@Nonnull EntityPlayerMP player) {
@@ -102,8 +103,6 @@ public final class NameCache implements INameCache {
         cache.clear();
         nameCache = null;
     }
-
-    private List<String> nameCache = null;
 
     @Override
     public synchronized List<String> getAllNames() {
