@@ -1,9 +1,14 @@
-BetterQuesting
-============
+# BetterQuesting
 
 A new and improved questing mod for Minecraft pack creators
 
----
+## This fork
+
+The Supersymmetry team had created this fork to incorporate changes from
+[GTNewHorizons/BetterQuesting#89](https://github.com/GTNewHorizons/BetterQuesting/pull/89) into the 1.12.2 version of
+BetterQuesting. Further improvements are planned in the future.
+
+## Upstream README
 
 This fork is a continuation of Better Questing for Minecraft 1.12.2 from where @Funwayguy stopped development.
 
