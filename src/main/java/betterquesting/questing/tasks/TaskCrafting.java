@@ -7,7 +7,6 @@ import betterquesting.api.utils.ItemComparison;
 import betterquesting.api.utils.JsonHelper;
 import betterquesting.api2.client.gui.misc.IGuiRect;
 import betterquesting.api2.client.gui.panels.IGuiPanel;
-import betterquesting.api2.storage.DBEntry;
 import betterquesting.api2.utils.ParticipantInfo;
 import betterquesting.client.gui2.tasks.PanelTaskCrafting;
 import betterquesting.core.BetterQuesting;
@@ -60,7 +59,7 @@ public class TaskCrafting implements ITask {
     }
 
     @Override
-    public void detect(ParticipantInfo pInfo, DBEntry<IQuest> quest) {
+    public void detect(ParticipantInfo pInfo, Map.Entry<UUID, IQuest> quest) {
         pInfo.ALL_UUIDS.forEach((uuid) -> {
             if (isComplete(uuid)) return;
 
@@ -72,25 +71,25 @@ public class TaskCrafting implements ITask {
             setComplete(uuid);
         });
 
-        pInfo.markDirtyParty(Collections.singletonList(quest.getID()));
+        pInfo.markDirtyParty(quest.getKey());
     }
 
-    public void onItemCraft(ParticipantInfo pInfo, DBEntry<IQuest> quest, ItemStack stack) {
+    public void onItemCraft(ParticipantInfo pInfo, Map.Entry<UUID, IQuest> quest, ItemStack stack) {
         if (!allowCraft) return;
         onItemInternal(pInfo, quest, stack);
     }
 
-    public void onItemSmelt(ParticipantInfo pInfo, DBEntry<IQuest> quest, ItemStack stack) {
+    public void onItemSmelt(ParticipantInfo pInfo, Map.Entry<UUID, IQuest> quest, ItemStack stack) {
         if (!allowSmelt) return;
         onItemInternal(pInfo, quest, stack);
     }
 
-    public void onItemAnvil(ParticipantInfo pInfo, DBEntry<IQuest> quest, ItemStack stack) {
+    public void onItemAnvil(ParticipantInfo pInfo, Map.Entry<UUID, IQuest> quest, ItemStack stack) {
         if (!allowAnvil) return;
         onItemInternal(pInfo, quest, stack);
     }
 
-    private void onItemInternal(ParticipantInfo pInfo, DBEntry<IQuest> quest, ItemStack stack) {
+    private void onItemInternal(ParticipantInfo pInfo, Map.Entry<UUID, IQuest> quest, ItemStack stack) {
         if (stack.isEmpty()) return;
 
         final List<Tuple<UUID, int[]>> progress = getBulkProgress(pInfo.ALL_UUIDS);
@@ -233,13 +232,13 @@ public class TaskCrafting implements ITask {
     }
 
     @Override
-    public IGuiPanel getTaskGui(IGuiRect rect, DBEntry<IQuest> context) {
+    public IGuiPanel getTaskGui(IGuiRect rect, Map.Entry<UUID, IQuest> context) {
         return new PanelTaskCrafting(rect, this);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public GuiScreen getTaskEditor(GuiScreen parent, DBEntry<IQuest> quest) {
+    public GuiScreen getTaskEditor(GuiScreen parent, Map.Entry<UUID, IQuest> quest) {
         return null;
     }
 

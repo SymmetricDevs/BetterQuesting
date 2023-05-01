@@ -7,7 +7,6 @@ import betterquesting.api.utils.ItemComparison;
 import betterquesting.api.utils.JsonHelper;
 import betterquesting.api2.client.gui.misc.IGuiRect;
 import betterquesting.api2.client.gui.panels.IGuiPanel;
-import betterquesting.api2.storage.DBEntry;
 import betterquesting.api2.utils.ParticipantInfo;
 import betterquesting.client.gui2.tasks.PanelTaskRetrieval;
 import betterquesting.core.BetterQuesting;
@@ -64,14 +63,14 @@ public class TaskRetrieval implements ITaskInventory, IItemTask {
     }
 
     @Override
-    public void onInventoryChange(@Nonnull DBEntry<IQuest> quest, @Nonnull ParticipantInfo pInfo) {
+    public void onInventoryChange(@Nonnull Map.Entry<UUID, IQuest> quest, @Nonnull ParticipantInfo pInfo) {
         if (!consume || autoConsume) {
             detect(pInfo, quest);
         }
     }
 
     @Override
-    public void detect(ParticipantInfo pInfo, DBEntry<IQuest> quest) {
+    public void detect(ParticipantInfo pInfo, Map.Entry<UUID, IQuest> quest) {
         if (isComplete(pInfo.UUID)) return;
 
         final List<Tuple<UUID, int[]>> progress = getBulkProgress(consume ? Collections.singletonList(pInfo.UUID) : pInfo.ALL_UUIDS);
@@ -144,7 +143,7 @@ public class TaskRetrieval implements ITaskInventory, IItemTask {
         checkAndComplete(pInfo, quest, updated);
     }
 
-    private void checkAndComplete(ParticipantInfo pInfo, DBEntry<IQuest> quest, boolean resync) {
+    private void checkAndComplete(ParticipantInfo pInfo, Map.Entry<UUID, IQuest> quest, boolean resync) {
         final List<Tuple<UUID, int[]>> progress = getBulkProgress(consume ? Collections.singletonList(pInfo.UUID) : pInfo.ALL_UUIDS);
         boolean updated = resync;
 
@@ -167,9 +166,9 @@ public class TaskRetrieval implements ITaskInventory, IItemTask {
 
         if (updated) {
             if (consume) {
-                pInfo.markDirty(Collections.singletonList(quest.getID()));
+                pInfo.markDirty(quest.getKey());
             } else {
-                pInfo.markDirtyParty(Collections.singletonList(quest.getID()));
+                pInfo.markDirtyParty(quest.getKey());
             }
         }
     }
@@ -292,12 +291,12 @@ public class TaskRetrieval implements ITaskInventory, IItemTask {
     }
 
     @Override
-    public IGuiPanel getTaskGui(IGuiRect rect, DBEntry<IQuest> quest) {
+    public IGuiPanel getTaskGui(IGuiRect rect, Map.Entry<UUID, IQuest> quest) {
         return new PanelTaskRetrieval(rect, this);
     }
 
     @Override
-    public boolean canAcceptItem(UUID owner, DBEntry<IQuest> quest, ItemStack stack) {
+    public boolean canAcceptItem(UUID owner, Map.Entry<UUID, IQuest> quest, ItemStack stack) {
         if (owner == null || stack == null || stack.isEmpty() || !consume || isComplete(owner) || requiredItems.size() <= 0) {
             return false;
         }
@@ -318,7 +317,7 @@ public class TaskRetrieval implements ITaskInventory, IItemTask {
     }
 
     @Override
-    public ItemStack submitItem(UUID owner, DBEntry<IQuest> quest, ItemStack input) {
+    public ItemStack submitItem(UUID owner, Map.Entry<UUID, IQuest> quest, ItemStack input) {
         if (owner == null || input.isEmpty() || !consume || isComplete(owner)) return input;
 
         ItemStack stack = input.copy();
@@ -371,7 +370,7 @@ public class TaskRetrieval implements ITaskInventory, IItemTask {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public GuiScreen getTaskEditor(GuiScreen parent, DBEntry<IQuest> quest) {
+    public GuiScreen getTaskEditor(GuiScreen parent, Map.Entry<UUID, IQuest> quest) {
         return null;
     }
 

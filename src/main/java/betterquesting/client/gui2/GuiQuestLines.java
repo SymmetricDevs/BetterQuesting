@@ -339,7 +339,7 @@ public class GuiQuestLines extends GuiScreenCanvas implements IPEventListener, I
                     PopContextMenu popup = new PopContextMenu(new GuiRectangle(mx, my, maxWidth + 12, questExistsUnderMouse ? 48 : 16), true);
                     if (canEdit) {
                         if (questExistsUnderMouse) {
-                            GuiQuestEditor editor = new GuiQuestEditor(new GuiQuestLines(parent), questEntry);
+                            GuiQuestEditor editor = new GuiQuestEditor(new GuiQuestLines(parent), questEntry.getKey());
                             Runnable actionEditor = () -> mc.displayGuiScreen(editor);
                             popup.addButton(QuestTranslation.translate("betterquesting.btn.edit"), null, actionEditor);
                         }

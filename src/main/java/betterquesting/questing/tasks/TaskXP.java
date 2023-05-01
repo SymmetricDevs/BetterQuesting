@@ -4,7 +4,6 @@ import betterquesting.XPHelper;
 import betterquesting.api.questing.IQuest;
 import betterquesting.api2.client.gui.misc.IGuiRect;
 import betterquesting.api2.client.gui.panels.IGuiPanel;
-import betterquesting.api2.storage.DBEntry;
 import betterquesting.api2.utils.ParticipantInfo;
 import betterquesting.client.gui2.tasks.PanelTaskXP;
 import betterquesting.core.BetterQuesting;
@@ -43,7 +42,7 @@ public class TaskXP implements ITaskTickable {
     }
 
     @Override
-    public void tickTask(@Nonnull ParticipantInfo pInfo, DBEntry<IQuest> quest) {
+    public void tickTask(@Nonnull ParticipantInfo pInfo, Map.Entry<UUID, IQuest> quest) {
         if (consume || pInfo.PLAYER.ticksExisted % 60 != 0) return; // Every 3 seconds
 
         long curProg = getUsersProgress(pInfo.UUID);
@@ -51,7 +50,7 @@ public class TaskXP implements ITaskTickable {
 
         if (curProg != nxtProg) {
             setUserProgress(pInfo.UUID, XPHelper.getPlayerXP(pInfo.PLAYER));
-            pInfo.markDirty(Collections.singletonList(quest.getID()));
+            pInfo.markDirty(quest.getKey());
         }
 
         long rawXP = levels ? XPHelper.getLevelXP(amount) : amount;
@@ -61,7 +60,7 @@ public class TaskXP implements ITaskTickable {
     }
 
     @Override
-    public void detect(ParticipantInfo pInfo, DBEntry<IQuest> quest) {
+    public void detect(ParticipantInfo pInfo, Map.Entry<UUID, IQuest> quest) {
         if (isComplete(pInfo.UUID)) return;
 
         long progress = getUsersProgress(pInfo.UUID);
@@ -89,9 +88,8 @@ public class TaskXP implements ITaskTickable {
             changed = true;
         }
 
-        if (changed) // Needs to be here because even if no additional progress was added, a party memeber may have completed the task anyway
-        {
-            pInfo.markDirty(Collections.singletonList(quest.getID()));
+        if (changed) { // Needs to be here because even if no additional progress was added, a party memeber may have completed the task anyway
+            pInfo.markDirty(quest.getKey());
         }
     }
 
@@ -189,12 +187,12 @@ public class TaskXP implements ITaskTickable {
     }
 
     @Override
-    public IGuiPanel getTaskGui(IGuiRect rect, DBEntry<IQuest> quest) {
+    public IGuiPanel getTaskGui(IGuiRect rect, Map.Entry<UUID, IQuest> quest) {
         return new PanelTaskXP(rect, this);
     }
 
     @Override
-    public GuiScreen getTaskEditor(GuiScreen screen, DBEntry<IQuest> quest) {
+    public GuiScreen getTaskEditor(GuiScreen screen, Map.Entry<UUID, IQuest> quest) {
         return null;
     }
 

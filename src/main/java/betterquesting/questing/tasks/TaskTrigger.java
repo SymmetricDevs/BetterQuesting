@@ -10,7 +10,6 @@ import betterquesting.api2.client.gui.misc.IGuiRect;
 import betterquesting.api2.client.gui.panels.IGuiPanel;
 import betterquesting.api2.client.gui.panels.content.PanelTextBox;
 import betterquesting.api2.client.gui.themes.presets.PresetColor;
-import betterquesting.api2.storage.DBEntry;
 import betterquesting.api2.utils.ParticipantInfo;
 import betterquesting.core.BetterQuesting;
 import betterquesting.questing.tasks.factory.FactoryTaskTrigger;
@@ -75,7 +74,7 @@ public class TaskTrigger implements ITask {
     }
 
     @SuppressWarnings("unchecked")
-    private void setupListener(DBEntry<IQuest> quest) {
+    private void setupListener(Map.Entry<UUID, IQuest> quest) {
         this.needsSetup = false; // Even if this fails, we're not going to try again till something changed.
 
         int tskID = quest.getValue().getTasks().getID(this);
@@ -85,7 +84,7 @@ public class TaskTrigger implements ITask {
 
         try {
             ICriterionInstance in = trig.deserializeInstance(GSON.fromJson(critJson, JsonObject.class), null);
-            listener = new BqsAdvListener(trig, in, quest.getID(), tskID);
+            listener = new BqsAdvListener(trig, in, quest.getKey(), tskID);
         } catch (Exception ignored) {
         }
     }
@@ -98,7 +97,7 @@ public class TaskTrigger implements ITask {
         return !this.needsSetup;
     }
 
-    public void onCriteriaComplete(EntityPlayerMP player, BqsAdvListener advList, int questID) {
+    public void onCriteriaComplete(EntityPlayerMP player, BqsAdvListener advList, UUID questID) {
         if (advList != this.listener) return;
         UUID playerID = QuestingAPI.getQuestingUUID(player);
         setComplete(playerID);
@@ -106,7 +105,7 @@ public class TaskTrigger implements ITask {
         if (qc != null) qc.markQuestDirty(questID);
     }
 
-    public void checkSetup(@Nonnull EntityPlayer player, @Nonnull DBEntry<IQuest> quest) {
+    public void checkSetup(@Nonnull EntityPlayer player, @Nonnull Map.Entry<UUID, IQuest> quest) {
         if (!needsSetup) return;
         setupListener(quest);
     }
@@ -122,7 +121,7 @@ public class TaskTrigger implements ITask {
     }
 
     @Override
-    public void detect(ParticipantInfo pInfo, DBEntry<IQuest> quest) {
+    public void detect(ParticipantInfo pInfo, Map.Entry<UUID, IQuest> quest) {
     }
 
     @Override
@@ -147,14 +146,14 @@ public class TaskTrigger implements ITask {
     @Override
     @Nullable
     @SideOnly(Side.CLIENT)
-    public IGuiPanel getTaskGui(IGuiRect rect, DBEntry<IQuest> quest) {
+    public IGuiPanel getTaskGui(IGuiRect rect, Map.Entry<UUID, IQuest> quest) {
         return new PanelTextBox(rect, desc).setColor(PresetColor.TEXT_MAIN.getColor());
     }
 
     @Override
     @Nullable
     @SideOnly(Side.CLIENT)
-    public GuiScreen getTaskEditor(GuiScreen parent, DBEntry<IQuest> quest) {
+    public GuiScreen getTaskEditor(GuiScreen parent, Map.Entry<UUID, IQuest> quest) {
         return null;
     }
 

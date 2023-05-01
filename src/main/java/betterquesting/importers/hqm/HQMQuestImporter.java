@@ -29,10 +29,10 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.UUID;
 import java.util.concurrent.Future;
 import java.util.function.Function;
 
@@ -169,14 +169,14 @@ public class HQMQuestImporter implements IImporter {
         if (idMap.containsKey(oldID)) {
             return idMap.get(oldID);
         } else {
-            IQuest quest = qdb.createNew(qdb.nextID());
+            IQuest quest = qdb.createNew(qdb.generateKey());
             idMap.put(oldID, quest);
             return quest;
         }
     }
 
     private void ImportQuestLine(IQuestDatabase questDB, IQuestLineDatabase lineDB, JsonObject json) {
-        IQuestLine questLine = lineDB.createNew(lineDB.nextID());
+        IQuestLine questLine = lineDB.createNew(lineDB.generateKey());
         questLine.setProperty(NativeProps.NAME, JsonHelper.GetString(json, "name", "HQM Quest Line"));
         questLine.setProperty(NativeProps.DESC, JsonHelper.GetString(json, "description", "No description"));
 
@@ -245,7 +245,7 @@ public class HQMQuestImporter implements IImporter {
                 }
 
                 IQuest preReq = GetNewQuest(id, questDB);
-                addReq(quest, questDB.getID(preReq));
+                addReq(quest, questDB.lookupKey(preReq));
             }
 
             for (JsonElement er : JsonHelper.GetArray(jQuest, "optionlinks")) {
@@ -264,7 +264,7 @@ public class HQMQuestImporter implements IImporter {
                 }
 
                 IQuest preReq = GetNewQuest(id, questDB);
-                addReq(quest, questDB.getID(preReq));
+                addReq(quest, questDB.lookupKey(preReq));
             }
 
             for (JsonElement jt : JsonHelper.GetArray(jQuest, "tasks")) {
@@ -305,14 +305,14 @@ public class HQMQuestImporter implements IImporter {
                 }
             }
 
-            if (questLine.getValue(questDB.getID(quest)) != null) {
+            if (questLine.get(questDB.lookupKey(quest)) != null) {
                 BetterQuesting.logger.log(Level.WARN, "Tried to add duplicate quest " + quest + " to quest line " + questLine.getUnlocalisedName());
             } else {
                 final int qleX = JsonHelper.GetNumber(jQuest, "x", 0).intValue();
                 final int qleY = JsonHelper.GetNumber(jQuest, "y", 0).intValue();
                 final boolean bigIcon = JsonHelper.GetBoolean(jQuest, "bigicon", false);
 
-                IQuestLineEntry qle = questLine.createNew(questDB.getID(quest));
+                IQuestLineEntry qle = questLine.createNew(questDB.lookupKey(quest));
                 int size = bigIcon ? 32 : 24;
                 qle.setSize(size, size);
                 qle.setPosition(qleX, qleY);
@@ -320,17 +320,8 @@ public class HQMQuestImporter implements IImporter {
         }
     }
 
-    private boolean containsReq(IQuest quest, int id) {
-        for (int reqID : quest.getRequirements()) if (id == reqID) return true;
-        return false;
-    }
-
-    private void addReq(IQuest quest, int id) {
-        if (containsReq(quest, id)) return;
-        int[] orig = quest.getRequirements();
-        int[] added = Arrays.copyOf(orig, orig.length + 1);
-        added[orig.length] = id;
-        quest.setRequirements(added);
+    private void addReq(IQuest quest, UUID id) {
+        quest.getRequirements().add(id);
     }
 
     static {

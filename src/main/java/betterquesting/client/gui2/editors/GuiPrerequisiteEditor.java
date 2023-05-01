@@ -26,7 +26,6 @@ import betterquesting.api2.client.gui.themes.presets.PresetColor;
 import betterquesting.api2.client.gui.themes.presets.PresetIcon;
 import betterquesting.api2.client.gui.themes.presets.PresetLine;
 import betterquesting.api2.client.gui.themes.presets.PresetTexture;
-import betterquesting.api2.storage.DBEntry;
 import betterquesting.api2.utils.QuestTranslation;
 import betterquesting.client.gui2.GuiQuest;
 import betterquesting.network.handlers.NetQuestEdit;
@@ -228,34 +227,15 @@ public class GuiPrerequisiteEditor extends GuiScreenCanvas implements IPEventLis
             quest.setRequirementType(entry.getKey(), quest.getRequirementType(entry.getKey()).next());
             SendChanges();
         } else if (btn.getButtonID() == 7) { // Reorder
-            DBEntry<IQuest> entry = ((PanelButtonStorage<DBEntry<IQuest>>) btn).getStoredValue();
-            reorderReq(quest, entry.getID());
+            Map.Entry<UUID, IQuest> entry = ((PanelButtonStorage<Map.Entry<UUID, IQuest>>) btn).getStoredValue();
+//            reorderReq(quest, entry.getKey());
+//            TODO: temporarily removed because this is a low priority
             SendChanges();
         }
     }
 
     private boolean containsReq(IQuest quest, UUID id) {
         return quest.getRequirements().contains(id);
-    }
-
-    private void reorderReq(IQuest quest, int id) {
-        int[] orig = quest.getRequirements();
-
-        int indexToShift = -1;
-        for (int i = 0; i < orig.length; i++) {
-            if (orig[i] == id) {
-                indexToShift = i;
-                break;
-            }
-        }
-        if (indexToShift < 0) return;
-
-        int indexFrom = (indexToShift - 1 + orig.length) % orig.length;
-        int tmp = orig[indexToShift];
-        orig[indexToShift] = orig[indexFrom];
-        orig[indexFrom] = tmp;
-
-        quest.setRequirements(orig);
     }
 
     private void removeReq(IQuest quest, UUID id) {

@@ -197,7 +197,7 @@ public class EventHandler {
         boolean refreshCache = false;
 
         if (!editMode && player.ticksExisted % 60 == 0) { // Passive quest state check every 3 seconds
-            List<Integer> com = new ArrayList<>();
+            List<UUID> com = new ArrayList<>();
 
             for (Map.Entry<UUID, IQuest> entry : activeQuests.entrySet()) {
                 if (!entry.getValue().isUnlocked(uuid)) continue; // Although it IS active, it cannot be completed yet
@@ -461,7 +461,7 @@ public class EventHandler {
         EntityPlayer player = event.getEntityPlayer();
         ParticipantInfo pInfo = new ParticipantInfo(player);
 
-        List<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).bulkLookup(pInfo.getSharedQuests());
+        Set<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).filterKeys(pInfo.getSharedQuests()).entrySet();
 
         for (Map.Entry<UUID, IQuest> entry : actQuest) {
             for (DBEntry<ITask> task : entry.getValue().getTasks().getEntries()) {
@@ -478,7 +478,7 @@ public class EventHandler {
         EntityPlayer player = event.getEntityPlayer();
         ParticipantInfo pInfo = new ParticipantInfo(player);
 
-        List<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).bulkLookup(pInfo.getSharedQuests());
+        Set<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).filterKeys(pInfo.getSharedQuests()).entrySet();
 
         IBlockState state = player.world.getBlockState(event.getPos());
 
@@ -497,7 +497,7 @@ public class EventHandler {
         EntityPlayer player = event.getEntityPlayer();
         ParticipantInfo pInfo = new ParticipantInfo(player);
 
-        List<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).bulkLookup(pInfo.getSharedQuests());
+        Set<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).filterKeys(pInfo.getSharedQuests()).entrySet();
 
         IBlockState state = player.world.getBlockState(event.getPos());
 
@@ -531,7 +531,7 @@ public class EventHandler {
         EntityPlayer player = event.getEntityPlayer();
         ParticipantInfo pInfo = new ParticipantInfo(player);
 
-        List<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).bulkLookup(pInfo.getSharedQuests());
+        Set<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).filterKeys(pInfo.getSharedQuests()).entrySet();
 
         for (Map.Entry<UUID, IQuest> entry : actQuest) {
             for (DBEntry<ITask> task : entry.getValue().getTasks().getEntries()) {
@@ -549,7 +549,7 @@ public class EventHandler {
         EntityPlayer player = event.getEntityPlayer();
         ParticipantInfo pInfo = new ParticipantInfo(player);
 
-        List<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).bulkLookup(pInfo.getSharedQuests());
+        Set<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).filterKeys(pInfo.getSharedQuests()).entrySet();
 
         for (Map.Entry<UUID, IQuest> entry : actQuest) {
             for (DBEntry<ITask> task : entry.getValue().getTasks().getEntries()) {
@@ -565,7 +565,7 @@ public class EventHandler {
 
         ParticipantInfo pInfo = new ParticipantInfo(event.player);
 
-        List<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).bulkLookup(pInfo.getSharedQuests());
+        Set<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).filterKeys(pInfo.getSharedQuests()).entrySet();
 
         for (Map.Entry<UUID, IQuest> entry : actQuest) {
             for (DBEntry<ITask> task : entry.getValue().getTasks().getEntries()) {
@@ -581,7 +581,7 @@ public class EventHandler {
 
         ParticipantInfo pInfo = new ParticipantInfo(event.player);
 
-        List<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).bulkLookup(pInfo.getSharedQuests());
+        Set<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).filterKeys(pInfo.getSharedQuests()).entrySet();
 
         for (Map.Entry<UUID, IQuest> entry : actQuest) {
             for (DBEntry<ITask> task : entry.getValue().getTasks().getEntries()) {
@@ -596,7 +596,7 @@ public class EventHandler {
         if (event.getEntityPlayer() == null || event.getEntityPlayer().world.isRemote) return;
 
         ParticipantInfo pInfo = new ParticipantInfo(event.getEntityPlayer());
-        List<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).bulkLookup(pInfo.getSharedQuests());
+        Set<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).filterKeys(pInfo.getSharedQuests()).entrySet();
 
         for (Map.Entry<UUID, IQuest> entry : actQuest) {
             for (DBEntry<ITask> task : entry.getValue().getTasks().getEntries()) {
@@ -612,7 +612,7 @@ public class EventHandler {
             return;
 
         ParticipantInfo pInfo = new ParticipantInfo((EntityPlayer) event.getSource().getTrueSource());
-        List<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).bulkLookup(pInfo.getSharedQuests());
+        Set<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).filterKeys(pInfo.getSharedQuests()).entrySet();
 
         for (Map.Entry<UUID, IQuest> entry : actQuest) {
             for (DBEntry<ITask> task : entry.getValue().getTasks().getEntries()) {
@@ -629,7 +629,9 @@ public class EventHandler {
         EntityPlayer player = event.getTamer();
         ParticipantInfo pInfo = new ParticipantInfo(player);
 
-        for (Map.Entry<UUID, IQuest> entry : QuestingAPI.getAPI(ApiReference.QUEST_DB).bulkLookup(pInfo.getSharedQuests())) {
+        Set<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).filterKeys(pInfo.getSharedQuests()).entrySet();
+
+        for (Map.Entry<UUID, IQuest> entry : actQuest){
             for (DBEntry<ITask> task : entry.getValue().getTasks().getEntries()) {
                 if (task.getValue() instanceof TaskTame)
                     ((TaskTame) task.getValue()).onAnimalTamed(pInfo, entry, event.getEntityLiving());
@@ -643,7 +645,9 @@ public class EventHandler {
 
         ParticipantInfo pInfo = new ParticipantInfo(event.getPlayer());
 
-        for (Map.Entry<UUID, IQuest> entry : QuestingAPI.getAPI(ApiReference.QUEST_DB).bulkLookup(pInfo.getSharedQuests())) {
+        Set<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).filterKeys(pInfo.getSharedQuests()).entrySet();
+
+        for (Map.Entry<UUID, IQuest> entry : actQuest) {
             for (DBEntry<ITask> task : entry.getValue().getTasks().getEntries()) {
                 if (task.getValue() instanceof TaskBlockBreak)
                     ((TaskBlockBreak) task.getValue()).onBlockBreak(pInfo, entry, event.getState(), event.getPos());
@@ -659,7 +663,7 @@ public class EventHandler {
         EntityPlayer player = (EntityPlayer) event.getEntityLiving();
         ParticipantInfo pInfo = new ParticipantInfo(player);
 
-        List<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).bulkLookup(pInfo.getSharedQuests());
+        Set<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).filterKeys(pInfo.getSharedQuests()).entrySet();
 
         for (Map.Entry<UUID, IQuest> entry : actQuest) {
             for (DBEntry<ITask> task : entry.getValue().getTasks().getEntries()) {
@@ -678,7 +682,9 @@ public class EventHandler {
 
         ParticipantInfo pInfo = new ParticipantInfo(event.getEntityPlayer());
 
-        for (Map.Entry<UUID, IQuest> entry : QuestingAPI.getAPI(ApiReference.QUEST_DB).bulkLookup(pInfo.getSharedQuests())) {
+        Set<Map.Entry<UUID, IQuest>> actQuest = QuestingAPI.getAPI(ApiReference.QUEST_DB).filterKeys(pInfo.getSharedQuests()).entrySet();
+
+        for (Map.Entry<UUID, IQuest> entry : actQuest) {
             for (DBEntry<ITask> task : entry.getValue().getTasks().getEntries()) {
                 if (task.getValue() instanceof TaskAdvancement)
                     ((TaskAdvancement) task.getValue()).onAdvancementGet(entry, pInfo, event.getAdvancement());

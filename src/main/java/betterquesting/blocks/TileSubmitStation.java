@@ -65,7 +65,7 @@ public class TileSubmitStation extends TileEntity implements IFluidHandler, ISid
         if (questID == null) return null;
 
         if (qCached == null) {
-            IQuest tmp = QuestDatabase.INSTANCE.getValue(questID);
+            IQuest tmp = QuestDatabase.INSTANCE.get(questID);
             if (tmp != null) qCached = Maps.immutableEntry(questID, tmp);
         }
 

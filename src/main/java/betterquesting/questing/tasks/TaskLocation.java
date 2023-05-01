@@ -3,7 +3,6 @@ package betterquesting.questing.tasks;
 import betterquesting.api.questing.IQuest;
 import betterquesting.api2.client.gui.misc.IGuiRect;
 import betterquesting.api2.client.gui.panels.IGuiPanel;
-import betterquesting.api2.storage.DBEntry;
 import betterquesting.api2.utils.ParticipantInfo;
 import betterquesting.client.gui2.tasks.PanelTaskLocation;
 import betterquesting.core.BetterQuesting;
@@ -70,16 +69,16 @@ public class TaskLocation implements ITaskTickable {
     }
 
     @Override
-    public void tickTask(@Nonnull ParticipantInfo pInfo, DBEntry<IQuest> quest) {
+    public void tickTask(@Nonnull ParticipantInfo pInfo, Map.Entry<UUID, IQuest> quest) {
         if (pInfo.PLAYER.ticksExisted % 100 == 0) internalDetect(pInfo, quest);
     }
 
     @Override
-    public void detect(@Nonnull ParticipantInfo pInfo, DBEntry<IQuest> quest) {
+    public void detect(@Nonnull ParticipantInfo pInfo, Map.Entry<UUID, IQuest> quest) {
         internalDetect(pInfo, quest);
     }
 
-    private void internalDetect(@Nonnull ParticipantInfo pInfo, DBEntry<IQuest> quest) {
+    private void internalDetect(@Nonnull ParticipantInfo pInfo, Map.Entry<UUID, IQuest> quest) {
         if (!pInfo.PLAYER.isEntityAlive() || !(pInfo.PLAYER instanceof EntityPlayerMP)) return;
 
         EntityPlayerMP playerMP = (EntityPlayerMP) pInfo.PLAYER;
@@ -109,7 +108,7 @@ public class TaskLocation implements ITaskTickable {
             pInfo.ALL_UUIDS.forEach((uuid) -> {
                 if (!isComplete(uuid)) setComplete(uuid);
             });
-            pInfo.markDirtyParty(Collections.singletonList(quest.getID()));
+            pInfo.markDirtyParty(quest.getKey());
         }
     }
 
@@ -183,12 +182,12 @@ public class TaskLocation implements ITaskTickable {
     }
 
     @Override
-    public IGuiPanel getTaskGui(IGuiRect rect, DBEntry<IQuest> quest) {
+    public IGuiPanel getTaskGui(IGuiRect rect, Map.Entry<UUID, IQuest> quest) {
         return new PanelTaskLocation(rect, this);
     }
 
     @Override
-    public GuiScreen getTaskEditor(GuiScreen parent, DBEntry<IQuest> quest) {
+    public GuiScreen getTaskEditor(GuiScreen parent, Map.Entry<UUID, IQuest> quest) {
         return null;
     }
 

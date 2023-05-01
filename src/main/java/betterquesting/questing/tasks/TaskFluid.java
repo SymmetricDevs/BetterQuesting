@@ -6,7 +6,6 @@ import betterquesting.api.questing.tasks.IItemTask;
 import betterquesting.api.utils.JsonHelper;
 import betterquesting.api2.client.gui.misc.IGuiRect;
 import betterquesting.api2.client.gui.panels.IGuiPanel;
-import betterquesting.api2.storage.DBEntry;
 import betterquesting.api2.utils.ParticipantInfo;
 import betterquesting.client.gui2.tasks.PanelTaskFluid;
 import betterquesting.core.BetterQuesting;
@@ -67,14 +66,14 @@ public class TaskFluid implements ITaskInventory, IFluidTask, IItemTask {
     }
 
     @Override
-    public void onInventoryChange(@Nonnull DBEntry<IQuest> quest, @Nonnull ParticipantInfo pInfo) {
+    public void onInventoryChange(@Nonnull Map.Entry<UUID, IQuest> quest, @Nonnull ParticipantInfo pInfo) {
         if (!consume || autoConsume) {
             detect(pInfo, quest);
         }
     }
 
     @Override
-    public void detect(ParticipantInfo pInfo, DBEntry<IQuest> quest) {
+    public void detect(ParticipantInfo pInfo, Map.Entry<UUID, IQuest> quest) {
         if (isComplete(pInfo.UUID)) return;
 
         // Removing the consume check here would make the task cheaper on groups and for that reason sharing is restricted to detect only
@@ -154,7 +153,7 @@ public class TaskFluid implements ITaskInventory, IFluidTask, IItemTask {
         checkAndComplete(pInfo, quest, updated);
     }
 
-    private void checkAndComplete(ParticipantInfo pInfo, DBEntry<IQuest> quest, boolean resync) {
+    private void checkAndComplete(ParticipantInfo pInfo, Map.Entry<UUID, IQuest> quest, boolean resync) {
         final List<Tuple<UUID, int[]>> progress = getBulkProgress(consume ? Collections.singletonList(pInfo.UUID) : pInfo.ALL_UUIDS);
         boolean updated = resync;
 
@@ -177,9 +176,9 @@ public class TaskFluid implements ITaskInventory, IFluidTask, IItemTask {
 
         if (updated) {
             if (consume) {
-                pInfo.markDirty(Collections.singletonList(quest.getID()));
+                pInfo.markDirty(quest.getKey());
             } else {
-                pInfo.markDirtyParty(Collections.singletonList(quest.getID()));
+                pInfo.markDirtyParty(quest.getKey());
             }
         }
     }
@@ -303,18 +302,18 @@ public class TaskFluid implements ITaskInventory, IFluidTask, IItemTask {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IGuiPanel getTaskGui(IGuiRect rect, DBEntry<IQuest> quest) {
+    public IGuiPanel getTaskGui(IGuiRect rect, Map.Entry<UUID, IQuest> quest) {
         return new PanelTaskFluid(rect, this);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public GuiScreen getTaskEditor(GuiScreen screen, DBEntry<IQuest> quest) {
+    public GuiScreen getTaskEditor(GuiScreen screen, Map.Entry<UUID, IQuest> quest) {
         return null;
     }
 
     @Override
-    public boolean canAcceptFluid(UUID owner, DBEntry<IQuest> quest, FluidStack fluid) {
+    public boolean canAcceptFluid(UUID owner, Map.Entry<UUID, IQuest> quest, FluidStack fluid) {
         if (owner == null || fluid == null || fluid.getFluid() == null || !consume || isComplete(owner) || requiredFluids.size() <= 0) {
             return false;
         }
@@ -331,7 +330,7 @@ public class TaskFluid implements ITaskInventory, IFluidTask, IItemTask {
     }
 
     @Override
-    public boolean canAcceptItem(UUID owner, DBEntry<IQuest> quest, ItemStack item) {
+    public boolean canAcceptItem(UUID owner, Map.Entry<UUID, IQuest> quest, ItemStack item) {
         if (owner == null || item == null || item.isEmpty() || !consume || isComplete(owner) || requiredFluids.size() <= 0) {
             return false;
         }
@@ -352,11 +351,11 @@ public class TaskFluid implements ITaskInventory, IFluidTask, IItemTask {
     }
 
     @Override
-    public FluidStack submitFluid(UUID owner, DBEntry<IQuest> quest, FluidStack fluid) {
+    public FluidStack submitFluid(UUID owner, Map.Entry<UUID, IQuest> quest, FluidStack fluid) {
         return submitFluidInternal(owner, quest, fluid, true);
     }
 
-    private FluidStack submitFluidInternal(UUID owner, DBEntry<IQuest> quest, FluidStack fluid, boolean doFill) {
+    private FluidStack submitFluidInternal(UUID owner, Map.Entry<UUID, IQuest> quest, FluidStack fluid, boolean doFill) {
         if (owner == null || fluid == null || fluid.amount <= 0 || !consume || isComplete(owner) || requiredFluids.size() <= 0) {
             return fluid;
         }
@@ -410,7 +409,7 @@ public class TaskFluid implements ITaskInventory, IFluidTask, IItemTask {
     }
 
     @Override
-    public ItemStack submitItem(UUID owner, DBEntry<IQuest> quest, ItemStack input) {
+    public ItemStack submitItem(UUID owner, Map.Entry<UUID, IQuest> quest, ItemStack input) {
         if (owner == null || input.isEmpty() || !consume || isComplete(owner)) return input;
 
         ItemStack item = input.splitStack(1); // Prevents issues with stack filling/draining

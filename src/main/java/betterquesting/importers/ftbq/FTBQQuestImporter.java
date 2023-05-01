@@ -7,7 +7,6 @@ import betterquesting.api.questing.*;
 import betterquesting.api.questing.rewards.IReward;
 import betterquesting.api.questing.tasks.ITask;
 import betterquesting.api.utils.BigItemStack;
-import betterquesting.api2.storage.DBEntry;
 import betterquesting.api2.storage.IDatabaseNBT;
 import betterquesting.core.BetterQuesting;
 import betterquesting.importers.ftbq.FTBEntry.FTBEntryType;
@@ -29,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.UUID;
 import java.util.function.Function;
 
 public class FTBQQuestImporter implements IImporter {
@@ -88,7 +88,7 @@ public class FTBQQuestImporter implements IImporter {
             File[] contents = qlFolder.listFiles();
             if (contents == null) continue;
 
-            int lineID = lineDB.nextID();
+            UUID lineID = lineDB.generateKey();
             IQuestLine questLine = lineDB.createNew(lineID);
             ID_MAP.put(hexName, new FTBEntry(lineID, questLine, FTBEntryType.LINE));
 
@@ -131,7 +131,7 @@ public class FTBQQuestImporter implements IImporter {
                 // === QUEST DATA ===
 
                 String hexID = questFile.getName().substring(0, questFile.getName().length() - 4);
-                int questID = questDB.nextID();
+                UUID questID = questDB.generateKey();
                 IQuest quest = questDB.createNew(questID);
                 IQuestLineEntry qle = questLine.createNew(questID);
                 ID_MAP.put(hexID, new FTBEntry(questID, quest, FTBEntryType.QUEST)); // Add this to the weird ass ID mapping
@@ -226,7 +226,7 @@ public class FTBQQuestImporter implements IImporter {
         // === PARENTING SET ===
 
         for (Entry<IQuest, String[]> entry : parentMap.entrySet()) {
-            List<Integer> qIDs = new ArrayList<>();
+            List<UUID> qIDs = new ArrayList<>();
 
             for (String key : entry.getValue()) {
                 FTBEntry type = ID_MAP.get(key);
@@ -237,15 +237,13 @@ public class FTBQQuestImporter implements IImporter {
                 } else if (type.type == FTBEntryType.VAR) continue;
 
                 if (type.type == FTBEntryType.QUEST) {
-                    qIDs.add(questDB.getID((IQuest) type.obj));
+                    qIDs.add(questDB.lookupKey((IQuest) type.obj));
                 } else if (type.type == FTBEntryType.LINE) {
-                    for (DBEntry<IQuestLineEntry> qle : ((IQuestLine) type.obj).getEntries()) qIDs.add(qle.getID());
+                    qIDs.addAll(((IQuestLine) type.obj).keySet());
                 }
             }
 
-            int[] preReq = new int[qIDs.size()];
-            for (int i = 0; i < qIDs.size(); i++) preReq[i] = qIDs.get(i);
-            entry.getKey().setRequirements(preReq);
+            entry.getKey().getRequirements().addAll(qIDs);
         }
     }
 

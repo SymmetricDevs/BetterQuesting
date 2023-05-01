@@ -136,7 +136,7 @@ public class QuestCache implements INBTSerializable<NBTTagCompound> {
         NBTTagList tagSchedule = new NBTTagList();
         for (QResetTime entry : getScheduledResets()) {
             NBTTagCompound tagEntry = NBTConverter.UuidValueType.QUEST.writeId(entry.questID);;
-            tagEntry.setInteger("quest", entry.questID);
+            NBTConverter.UuidValueType.QUEST.writeId(entry.questID, tagEntry);
             tagEntry.setLong("time", entry.time);
             tagSchedule.appendTag(tagEntry);
         }

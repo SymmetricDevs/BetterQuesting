@@ -16,6 +16,7 @@ import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class PlayerContainerListener implements IContainerListener {
@@ -64,7 +65,7 @@ public class PlayerContainerListener implements IContainerListener {
     private void updateTasks() {
         ParticipantInfo pInfo = new ParticipantInfo(player);
 
-        for (DBEntry<IQuest> entry : QuestingAPI.getAPI(ApiReference.QUEST_DB).bulkLookup(pInfo.getSharedQuests())) {
+        for (Map.Entry<UUID, IQuest> entry : QuestingAPI.getAPI(ApiReference.QUEST_DB).filterKeys(pInfo.getSharedQuests()).entrySet()) {
             for (DBEntry<ITask> task : entry.getValue().getTasks().getEntries()) {
                 if (task.getValue() instanceof ITaskInventory)
                     ((ITaskInventory) task.getValue()).onInventoryChange(entry, pInfo);

@@ -6,6 +6,7 @@ import betterquesting.api.client.gui.misc.IVolatileScreen;
 import betterquesting.api.network.QuestingPacket;
 import betterquesting.api.questing.IQuest;
 import betterquesting.api.utils.BigItemStack;
+import betterquesting.api.utils.NBTConverter;
 import betterquesting.api.utils.RenderUtils;
 import betterquesting.api2.client.gui.GuiScreenCanvas;
 import betterquesting.api2.client.gui.controls.PanelButton;
@@ -23,7 +24,6 @@ import betterquesting.api2.client.gui.panels.content.PanelTextBox;
 import betterquesting.api2.client.gui.resources.textures.ItemTexture;
 import betterquesting.api2.client.gui.themes.presets.PresetColor;
 import betterquesting.api2.client.gui.themes.presets.PresetTexture;
-import betterquesting.api2.storage.DBEntry;
 import betterquesting.api2.utils.QuestTranslation;
 import betterquesting.questing.tasks.TaskAdvancement;
 import net.minecraft.advancements.Advancement;
@@ -36,14 +36,16 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class GuiEditTaskAdvancement extends GuiScreenCanvas implements IVolatileScreen {
-    private final DBEntry<IQuest> quest;
+    private final Map.Entry<UUID, IQuest> quest;
     private final TaskAdvancement task;
 
     private ResourceLocation selected;
 
-    public GuiEditTaskAdvancement(GuiScreen parent, DBEntry<IQuest> quest, TaskAdvancement task) {
+    public GuiEditTaskAdvancement(GuiScreen parent, Map.Entry<UUID, IQuest> quest, TaskAdvancement task) {
         super(parent);
         this.quest = quest;
         this.task = task;
@@ -119,7 +121,7 @@ public class GuiEditTaskAdvancement extends GuiScreenCanvas implements IVolatile
         NBTTagCompound payload = new NBTTagCompound();
         NBTTagList dataList = new NBTTagList();
         NBTTagCompound entry = new NBTTagCompound();
-        entry.setInteger("questID", quest.getID());
+        NBTConverter.UuidValueType.QUEST.writeId(quest.getKey(), entry);
         entry.setTag("config", quest.getValue().writeToNBT(new NBTTagCompound()));
         dataList.appendTag(entry);
         payload.setTag("data", dataList);

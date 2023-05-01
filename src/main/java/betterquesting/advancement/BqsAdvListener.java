@@ -15,13 +15,14 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
+import java.util.UUID;
 
 public class BqsAdvListener<T extends ICriterionInstance> extends ICriterionTrigger.Listener<T> {
     private final ICriterionTrigger<T> trigType;
-    private final Tuple<Integer, Integer> mappedIDs;
+    private final Tuple<UUID, Integer> mappedIDs;
 
     @SuppressWarnings("ConstantConditions")
-    public BqsAdvListener(@Nonnull ICriterionTrigger<T> trigType, @Nonnull T critereon, int questID, int taskID) {
+    public BqsAdvListener(@Nonnull ICriterionTrigger<T> trigType, @Nonnull T critereon, UUID questID, int taskID) {
         super(critereon, null, "BQ_PROXY");
         this.trigType = trigType;
         this.mappedIDs = new Tuple<>(questID, taskID);
@@ -40,7 +41,7 @@ public class BqsAdvListener<T extends ICriterionInstance> extends ICriterionTrig
     @Override
     public void grantCriterion(PlayerAdvancements playerAdv) {
         try {
-            IQuest q = QuestingAPI.getAPI(ApiReference.QUEST_DB).getValue(mappedIDs.getFirst());
+            IQuest q = QuestingAPI.getAPI(ApiReference.QUEST_DB).get(mappedIDs.getFirst());
             if (q == null) return;
             ITask t = q.getTasks().getValue(mappedIDs.getSecond());
             if (!(t instanceof TaskTrigger)) return;
@@ -53,7 +54,7 @@ public class BqsAdvListener<T extends ICriterionInstance> extends ICriterionTrig
 
     //
     public boolean verify() {
-        IQuest q = QuestingAPI.getAPI(ApiReference.QUEST_DB).getValue(mappedIDs.getFirst());
+        IQuest q = QuestingAPI.getAPI(ApiReference.QUEST_DB).get(mappedIDs.getFirst());
         if (q == null) return false;
         ITask t = q.getTasks().getValue(mappedIDs.getSecond());
         if (t instanceof TaskTrigger) {

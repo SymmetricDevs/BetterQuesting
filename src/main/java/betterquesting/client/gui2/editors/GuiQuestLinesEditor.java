@@ -303,7 +303,7 @@ public class GuiQuestLinesEditor extends GuiScreenCanvas implements IPEventListe
             lineList.addPanel(tmp);
             lineList.addPanel(new PanelButtonStorage<>(new GuiRectangle(w - 32, i * 16, 16, 16, 0), 6, "", entry).setIcon(PresetIcon.ICON_TRASH.getTexture()));
             PanelButton btnUp = new PanelButtonStorage<>(new GuiRectangle(w - 16, i * 16, 16, 16, 0), 7, "", entry).setIcon(PresetIcon.ICON_UP.getTexture());
-            btnUp.setActive(QuestLineDatabase.INSTANCE.getSortedEntries().size() > 1);
+            btnUp.setActive(QuestLineDatabase.INSTANCE.getOrderedEntries().size() > 1);
             lineList.addPanel(btnUp);
             i++;
         }
