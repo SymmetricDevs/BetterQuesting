@@ -1,6 +1,6 @@
 # BetterQuesting
 
-A new and improved questing mod for Minecraft pack creators
+A new and improved questing mod for Minecraft modpack creators
 
 [Developers should see the notes](./notes)
 
